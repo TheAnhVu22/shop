@@ -58,6 +58,12 @@
                             <li class="nav-item">
                               <a class="nav-link" href="{{ route('product.index') }}">Sản phẩm</a>
                             </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href="{{ route('blog.index') }}">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href="{{ route('slide.index') }}">Slide</a>
+                            </li>
                           
                     </ul>
 

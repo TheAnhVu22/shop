@@ -48,7 +48,7 @@ class ProductController extends Controller
                 'product_quantity' => 'required|integer',
                 'product_image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height:100,max_width:1000,max_height:1000',
 
-                'product_price' => 'required',
+                'product_price' => 'required|integer',
                 'category_id' => 'required',
                 'brand_id' => 'required',
                 'product_status' => 'required',
@@ -127,7 +127,7 @@ class ProductController extends Controller
                 'product_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height:100,max_width:1000,max_height:1000',
                 'product_slug' => 'required',
                 'product_quantity' => 'required|integer',
-                'product_price' => 'required',
+                'product_price' => 'required|integer',
                 'category_id' => 'required',
                 'brand_id' => 'required',
                 'product_status' => 'required',

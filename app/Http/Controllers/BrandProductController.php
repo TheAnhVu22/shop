@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class BrandProductController extends Controller
 {
+    
     public function index()
     {
         $brand = BrandProduct::orderBy('id','DESC')->get();

@@ -4,7 +4,7 @@
 @include('layouts.nav')
   <!---------------------------- main ----------------------->
  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <!-- Navbar -->
+   <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
       <div class="container-fluid py-1 px-3">
         
@@ -32,13 +32,13 @@
 
     <div class="container-fluid py-4">
       <!---------------------------- Nội dung ----------------------->
-        <a href="{{ route('product.create') }}" class="btn btn-success">Thêm</a>
+        <a href="{{ route('slide.create') }}" class="btn btn-success">Thêm</a>
         <div class="row">
         <div class="col-12">
           <div class="card my-4">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
               <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                <h6 class="text-white text-capitalize ps-3">Sản phẩm</h6>
+                <h6 class="text-white text-capitalize ps-3">Slide</h6>
               </div>
             </div>
             <div class="cadr-body">
@@ -47,19 +47,16 @@
                   <thead>
                     <tr>
                       <th class="text-center">STT</th>
-                      <th class="text-center">Sản phẩm</th>
-                      {{-- <th class="text-center">Mô tả</th> --}}
-                      <th class="text-center">Giá</th>
-                      <th class="text-center">Số lượng</th>
-                      <th class="text-center">Danh mục</th>
-                      <th class="text-center">Thương hiệu</th>
-                      <th class="text-center">Hiển thị</th>
+                      <th class="text-center">Ảnh</th>
+                      <th class="text-center">Tên slide</th>
+                      <th class="text-center">Mô tả</th>
+                      
                       <th class="text-center"></th>
                       <th class="text-center"></th>
                     </tr>
                   </thead>
                   <tbody>
-                     @foreach ($product as $key => $dulieu)
+                     @foreach ($slide as $key => $dulieu)
                     <tr>
                       {{-- <td>
                         
@@ -69,50 +66,31 @@
                       <td class="text-center">
                         {{$key}}
                       </td>
+
+                      <td class="text-center"><img src="{{ asset('uploads/'.$dulieu->slide_image) }}" width="200">
+                      </td>
+
                       <td class="text-center">
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="{{ asset('uploads/'.$dulieu->product_image) }}" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{$dulieu->product_content}}</h6>
-                          </div>
-                        </div>
-                      </td class="text-center">
-                      {{-- <td class="text-center">
+                            <h6 class="mb-0 text-sm">{{$dulieu->slide_name}}</h6>                          
+                     </td>
+
+                      <td class="text-center">
                         @php
-                          $tomtat = substr($dulieu->product_desc, 0,40);
+                          $tomtat = substr($dulieu->slide_desc, 0,40);
                         @endphp
                         {{$tomtat.'....'}}
                         
-                      </td> --}}
-                      <td class="text-center">
-                        {{number_format($dulieu->product_price)}}
                       </td>
+                      
+                    
                       <td class="text-center">
-                        {{$dulieu->product_quantity}}
-                      </td>
-                      <td class="text-center">
-                        {{$dulieu->category->category_name}}
-                      </td>
-                      <td class="text-center">
-                        {{$dulieu->brand->brand_name}}
-                      </td>
-                      <td class="text-center">
-                        
-                        @if ($dulieu->product_status == 0)
-                          <span class="badge badge-sm bg-gradient-danger">Không Hiển thị</span>
-                         @else
-                          <span class="badge badge-sm bg-gradient-success">Hiển thị</span>
-                        @endif
-                      </td>
-                      <td class="text-center">
-                        <a href="{{ route('product.edit',$dulieu->id) }}" class="btn btn-warning btn-sm">
+                        <a href="{{ route('slide.edit',$dulieu->id) }}" class="btn btn-warning btn-sm">
                           Sửa
                         </a>
                       </td>
+
                       <td class="text-center">
-                        <form action="{{ route('product.destroy',$dulieu->id) }}" method="POST">
+                        <form action="{{ route('slide.destroy',$dulieu->id) }}" method="POST">
                           @method('DELETE')
                           @csrf
                           <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Xác nhận xóa')">Xóa</button>
@@ -152,7 +130,7 @@
                   <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
                 </li>
                 <li class="nav-item">
-                  <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
+                  <a href="https://www.creative-tim.com/slide" class="nav-link text-muted" target="_blank">slide</a>
                 </li>
                 <li class="nav-item">
                   <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
@@ -164,5 +142,4 @@
       </footer>
     </div>
   </main>
-  @include('layouts.setting')
 @endsection

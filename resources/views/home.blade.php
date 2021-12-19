@@ -632,5 +632,4 @@
       </footer>
     </div>
   </main>
-  @include('layouts.setting')
 @endsection
