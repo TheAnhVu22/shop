@@ -73,64 +73,11 @@
 	<section id="do_action">
 		<div class="container">
 			<div class="heading">
-				<h3>Điền thông tin mua hàng</h3>
-				<p>Choose if you have a discount code or reward points you want to use or would like to estimate your delivery cost.</p>
+				<h3>Thông tin đơn hàng</h3>
+				
 			</div>
 			<div class="row">
-				{{-- <div class="col-sm-6">
-					<div class="chose_area">
-						<ul class="user_option">
-							<li>
-								<input type="checkbox">
-								<label>Use Coupon Code</label>
-							</li>
-							<li>
-								<input type="checkbox">
-								<label>Use Gift Voucher</label>
-							</li>
-							<li>
-								<input type="checkbox">
-								<label>Estimate Shipping & Taxes</label>
-							</li>
-						</ul>
-						<ul class="user_info">
-							<li class="single_field">
-								<label>Country:</label>
-								<select>
-									<option>United States</option>
-									<option>Bangladesh</option>
-									<option>UK</option>
-									<option>India</option>
-									<option>Pakistan</option>
-									<option>Ucrane</option>
-									<option>Canada</option>
-									<option>Dubai</option>
-								</select>
-								
-							</li>
-							<li class="single_field">
-								<label>Region / State:</label>
-								<select>
-									<option>Select</option>
-									<option>Dhaka</option>
-									<option>London</option>
-									<option>Dillih</option>
-									<option>Lahore</option>
-									<option>Alaska</option>
-									<option>Canada</option>
-									<option>Dubai</option>
-								</select>
-							
-							</li>
-							<li class="single_field zip-field">
-								<label>Zip Code:</label>
-								<input type="text">
-							</li>
-						</ul>
-						<a class="btn btn-default update" href="">Get Quotes</a>
-						<a class="btn btn-default check_out" href="">Continue</a>
-					</div>
-				</div> --}}
+				
 				<div class="col-sm-6">
 					<div class="total_area">
 						<ul>
@@ -139,7 +86,20 @@
 							<li>Phí vận chuyển<span>Free</span></li>
 							<li>Thành tiền <span>{{Cart::total(0)}} vnđ</span></li>
 						</ul>
-							<a class="btn btn-default check_out" href="{{ route('login_checkout') }}">Thanh toán</a>
+						@if (Cart::subtotal(0)!=0)
+							@php
+                                $customer_id = Session()->get('customer_id');
+                                $shipping_id = Session()->get('shipping_id');
+                                @endphp
+                                @if ($customer_id == null)
+								<a class="btn btn-default check_out" href="{{ route('login_checkout') }}">Thanh toán</a>
+								 @elseif($customer_id != null && $shipping_id != null)
+								 <a class="btn btn-default check_out" href="{{ route('payment') }}"> Thanh toán</a>
+								 @else
+                                    <a class="btn btn-default check_out" href="{{ route('checkout') }}"> Thanh toán</a>
+                                @endif
+						@endif
+								
 					</div>
 				</div>
 			</div>

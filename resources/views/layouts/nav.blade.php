@@ -18,6 +18,14 @@
               </a>
             </li>
             <li class="nav-item">
+              <a class="nav-link text-white " href="{{ route('manage_order') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  
+                </div>
+                <span class="nav-link-text ms-1">Đơn hàng</span>
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link text-white " href="{{ route('category.index') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   

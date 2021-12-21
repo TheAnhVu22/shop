@@ -64,6 +64,14 @@
                                 @endif
                             </div>
                         </div>
+                        <p style="text-align: center;">Hoặc</p>
+                        <div class="form-group row">
+                            <div class="col-4 offset-md-3">
+                                <a href="{{ route('login.google') }}" class="btn btn-primary btn-block">login with google</a>
+                                <a href="{{ route('login.facebook') }}" class="btn btn-primary btn-block">login with facebook</a>
+                                <a href="{{ route('login.github') }}" class="btn btn-primary btn-block">login with github</a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

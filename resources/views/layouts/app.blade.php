@@ -439,5 +439,10 @@ $(document).ready( function () {
 } );
 </script>
 
+<script type="text/javascript" src="{{ asset('ckeditor_4.17.1_full_easyimage/ckeditor/ckeditor.js') }}"></script>
+<script type="text/javascript">
+            CKEDITOR.replace('noidungblog');
+            CKEDITOR.replace('noidung_sach');
+        </script>
 </body>
 </html>

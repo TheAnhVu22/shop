@@ -16,14 +16,14 @@
 									
 								</ul>
 							</div>
-							<a href="">
+							<a href="{{ route('view_blog',$dulieu->blog_slug) }}">
 								<img src="{{ asset('uploads/'.$dulieu->blog_image) }}" alt="" height="200">
 							</a>
 							<p>
 							@php
 								$tomtat= substr($dulieu->blog_desc, 0, 200);
 							@endphp</p>
-							{{$tomtat."..."}}
+							{!!$tomtat."..."!!}
 							<a  class="btn btn-primary" href="{{ route('view_blog',$dulieu->blog_slug) }}">Đọc thêm</a>
 						</div>
 						

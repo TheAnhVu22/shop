@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     /*
@@ -36,5 +38,56 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+    //google login
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+    //google callback
+    public function handleGoogleCallback()
+    {
+        $user = Socialite::driver('google')->stateless()->user();
+
+        $this->_registerOrLoginUser($user);
+        return redirect()->route('home');
+    }
+
+    //facebook login
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+    //facebook callback
+    public function handleFacebookCallback()
+    {
+        $user = Socialite::driver('facebook')->stateless()->user();
+        $this->_registerOrLoginUser($user);
+        return redirect()->route('home');
+    }
+
+    //github login
+    public function redirectToGithub()
+    {
+        return Socialite::driver('github')->redirect();
+    }
+    //github callback
+    public function handleGithubCallback()
+    {
+        $user = Socialite::driver('github')->stateless()->user();
+        $this->_registerOrLoginUser($user);
+        return redirect()->route('home');
+    }
+    protected function _registerOrLoginUser($data)
+    {
+        $user = User::where('email',$data->email)->first();
+        if(!$user){
+            $user = new User();
+            $user->name = $data->name;
+            $user->email = $data->email;
+            $user->provider_id = $data->id;
+            $user->save();
+        }
+        Auth::login($user);
     }
 }

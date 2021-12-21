@@ -3,21 +3,44 @@
 	 <section id="form"><!--form-->
         <div class="container">
             <div class="row">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+                @if (session('status'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('status') }}
+                        </div>
+                @endif
                 <div class="col-sm-4 col-sm-offset-1">
                     <div class="login-form"><!--login form-->
                         <h2>Đăng nhập</h2>
-                        <form action="#">
-                            
-                            <input type="email" name="login_email" placeholder="Email Address" />
-                            <input type="text" name="login_password" placeholder="Password" />
+                        <form action="{{ route('login_customer') }}" method="POST">
+                            @csrf
+                            <input type="email" name="login_email" placeholder="Email Address" value="{{old('login_email')}}">
+                            <input autocomplete="off" type="password" name="login_password" placeholder="Password" value="{{old('login_password')}}">
                             <span>
                                 <input type="checkbox" name="luumatkhau" class="checkbox"> 
                                 Lưu mật khẩu
                             </span>
                             <button type="submit" class="btn btn-success">Đăng nhập</button>
                         </form>
+                       <p style="text-align: center;">Hoặc</p>
+                        <div class="form-group row">
+                            <div class="col-4 offset-md-3">
+                                <a href="{{ route('login_checkout.google') }}" class="btn btn-primary btn-block">login with google</a>
+                                <a href="{{ route('login_checkout.facebook') }}" class="btn btn-primary btn-block">login with facebook</a>
+                               
+                            </div>
+                        </div>
                     </div><!--/login form-->
                 </div>
+                
                 <div class="col-sm-1">
                     <h2 class="or">Hoặc</h2>
                 </div>
@@ -26,15 +49,25 @@
                         <h2>Đăng ký</h2>
                         <form action="{{ route('customer.store') }}" method="POST">
                             @csrf
-                            <input type="text" placeholder="Tên" name="customer_name">
-                            <input type="email" placeholder="Email" name="customer_email">
-                            <input type="text" placeholder="Số điện thoại" name="customer_phone">
-                            <input type="password" placeholder="Mật khẩu" name="customer_password">
-                            
+                            <input autocomplete="off" type="text" placeholder="Tên" name="customer_name">
+                            <input autocomplete="off" type="email" placeholder="Email" name="customer_email">
+                            <input autocomplete="off" type="text" placeholder="Số điện thoại" name="customer_phone">
+                            <input autocomplete="off" type="password" placeholder="Mật khẩu" name="customer_password">
+                            <div class="g-recaptcha" data-sitekey="{{env('CAPTCHA_KEY')}}"></div>
+                <br/>
+                @if($errors->has('g-recaptcha-response'))
+                <span class="invalid-feedback" style="display:block">
+                    <strong>{{$errors->first('g-recaptcha-response')}}</strong>
+                </span>
+                @endif
                             <button type="submit" class="btn btn-success">Đăng ký</button>
                         </form>
+                        
                     </div><!--/sign up form-->
                 </div>
+
+                
+
             </div>
         </div>
     </section><!--/form-->

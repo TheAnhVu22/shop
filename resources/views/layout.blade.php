@@ -4,8 +4,30 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Shop ATV</title>
+        {{-- <meta name="csrf-token" content="{{csrf_token()}}">
+        <meta name="description" content="{{$meta_desc}}"/>
+        <meta name="keywords" content="{{$meta_keywords}}"/>
+        <meta name="robots" content="index, follow"> 
+        <link rel="canonical" href="{{$url_canonical}}" />
 
+        <!------Share------->
+        <meta property="og:type" content="website" />
+
+        <meta property="og:title" content="{{$meta_title}}" />
+
+        <meta property="og:description" content="{{$meta_desc}}" />
+
+        <meta property="og:image" content="{{$image_og}}" />
+
+        <meta property="og:url" content="{{$url_canonical}}" />
+
+        <meta property="og:site_name" content="Sachtruyen247" />
+
+        <link rel="icon" href="{{$link_icon}}" type="image/gif" sizes="16x16">
+
+        <title>{{$meta_title}}</title>
+        <!-- Styles --> --}}
+    <!--//-------Seo--------->
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
         <script src="https://kit.fontawesome.com/f8077388f9.js" crossorigin="anonymous"></script>
@@ -13,7 +35,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
    
-
+    <link href="{{ asset('css/sweetalert.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/prettyPhoto.css') }}" rel="stylesheet">
@@ -94,8 +116,17 @@
                             <ul class="nav navbar-nav">
                                 <li><a href="{{ route('login_checkout') }}"><i class="fa fa-user"></i> Tài khoản</a></li>
                                 <li><a href="#"><i class="fa fa-heart"></i> Yêu thích</a></li>
-                                <li><a href="{{ route('cart.index') }}"><i class="fa fa-shopping-cart"></i> Giỏ hàng</a></li>
-                                <li><a href="{{ route('login_checkout') }}"><i class="fa fa-lock"></i> Đăng nhập</a></li>
+                                <li><a href="{{ route('gio_hang') }}"><i class="fa fa-shopping-cart"></i> Giỏ hàng</a></li>
+                                @php
+                                    $customer_id = Session()->get('customer_id');
+                                @endphp
+                                @if ($customer_id == null)
+                                    <li><a href="{{ route('login_checkout') }}"><i class="fa fa-lock"></i> Đăng nhập</a></li>
+                                @else
+                                    <li><a href="{{ route('logout_checkout') }}"><i class="fa fa-lock"></i> Đăng xuất</a></li>
+                                @endif
+                                
+                                
                             </ul>
                         </div>
                     </div>
@@ -139,7 +170,15 @@
                     </div>
                     <div class="col-sm-3">
                         <div class="search_box pull-right">
-                            <input type="text" placeholder="Search"/ name="timkiem">
+                            <form autocomplete="off" class="form-inline my-2 my-lg-0" action="{{url('tim_kiem')}}" method="POST">
+                            @csrf
+                            <div class="row">
+                              <input class="form-control mr-sm-2" id="keywords" type="search" name="tukhoa" placeholder="Tìm kiếm...." aria-label="Search">
+                              
+                              <button class="btn btn-success my-2 my-sm-0" type="submit">Tìm kiếm <i class="fas fa-search"></i></button>
+                              </div>
+                              <div id="search_ajax"></div>
+                        </form>
                         </div>
                     </div>
                 </div>
@@ -412,7 +451,7 @@
     <script src="{{ asset('js/price-range.js') }}"></script>
     <script src="{{ asset('js/jquery.prettyPhoto.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-
+    
     
 
     <script type="text/javascript">
@@ -427,6 +466,7 @@
                 data:{_token:_token, danhmuc_id:danhmuc_id},
                 success:function(data){
                     $('#tab_danhmuctruyen').html(data);
+
                 }
 
             }); 
@@ -467,6 +507,94 @@
     {{-- // js SDK liên kết facebook --}}
       <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v12.0" nonce="QTtQYjTq"></script>
+
+ <script src="https://www.google.com/recaptcha/api.js" async defer></script>  
+
+<script src="{{ asset('js/sweetalert.js') }}"></script>
+ <script type="text/javascript">
+        $(document).ready(function(){
+            $('.add-to-cart').click(function(){
+                var id = $(this).data('id_product');
+                 //alert(id);
+                var cart_product_id = $('.cart_product_id_' + id).val();
+                var cart_product_name = $('.cart_product_name_' + id).val();
+                var cart_product_image = $('.cart_product_image_' + id).val();
+                var cart_product_quantity = $('.cart_product_quantity_' + id).val();
+                var cart_product_price = $('.cart_product_price_' + id).val();
+                var cart_product_qty = $('.cart_product_qty_' + id).val();
+                var _token = $('input[name="_token"]').val();
+                // alert(cart_product_id)
+                // alert(cart_product_name)
+                // alert(cart_product_image)
+                // alert(cart_product_quantity)
+                // alert(cart_product_price)
+                // alert(cart_product_qty)
+                // alert(_token)
+                if(parseInt(cart_product_qty)>parseInt(cart_product_quantity)){
+                    alert('Làm ơn đặt nhỏ hơn ' + cart_product_quantity);
+                }else{
+
+                    $.ajax({
+
+                        url: '{{url('/add_cart_ajax')}}',
+                        method: 'POST',
+                        data:{cart_product_id:cart_product_id,cart_product_name:cart_product_name,cart_product_image:cart_product_image,cart_product_price:cart_product_price,cart_product_qty:cart_product_qty,_token:_token,cart_product_quantity:cart_product_quantity},
+                        success:function(){
+
+                            swal({
+                                    title: "Thêm vào giỏ hàng thành công !",
+                                    //text: "Bạn muốn mua hàng tiếp hoặc tới giỏ hàng để tiến hành thanh toán",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Xem tiếp",
+                                    confirmButtonClass: "btn-success",
+                                    confirmButtonText: "Đi đến giỏ hàng",
+                                    closeOnConfirm: false
+                                },
+                                function() {
+                                    window.location.href = "{{url('/gio_hang')}}";
+                                });
+                        
+
+                        }
+
+                    });
+                }
+
+                
+            });
+        });
+    </script>
+
+    {{-- tìm kiếm ajax --}}
+    <script type="text/javascript">
+      $('#keywords').keyup(function(){
+          var query = $(this).val();
+
+            if(query != '')
+              {
+               var _token = $('input[name="_token"]').val();
+
+               $.ajax({
+                url:"{{url('/autocomplete-ajax')}}",
+                method:"POST",
+                data:{query:query, _token:_token},
+                success:function(data){
+                 $('#search_ajax').fadeIn();  
+                  $('#search_ajax').html(data);
+                }
+               });
+
+              }else{
+
+                $('#search_ajax').fadeOut();  
+              }
+          });
+
+          $(document).on('click', '.li_search_ajax', function(){  
+              $('#keywords').val($(this).text());  
+              $('#search_ajax').fadeOut();  
+          }); 
+      </script>
 
 </body>
 </html>

@@ -22,7 +22,7 @@
 							<a href="">
 								<img src="{{ asset('uploads/'.$blog->blog_image) }}" alt="" width="100%" height="250">
 							</a>
-							<span>{{$blog->blog_desc}}</span>
+							<span>{!!$blog->blog_desc!!}</span>
 							
 						</div>
 					</div><!--/blog-post-area-->

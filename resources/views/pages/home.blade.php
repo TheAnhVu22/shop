@@ -9,13 +9,19 @@
                     @endif
                     @foreach ($new_product as $key => $dulieu)
                         
-                        <div class="col-sm-4">
+                        {{-- <div class="col-sm-4">
                             <div class="product-image-wrapper">
                                 <div class="single-products">
                                         <div class="productinfo text-center">
                                             <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
                                             <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" width="200" height="150">
                                             <h4>{{number_format($dulieu->product_price)}} vnđ</h4>
+                                            <p>@php
+                                              $tomtat = substr($dulieu->product_content, 0,30);
+                                            @endphp
+                                           
+                                            {{$tomtat."..."}} 
+                                            </p>   
                                             </a>
                                             
                                         </div>
@@ -23,30 +29,24 @@
                                             <div class="overlay-content">
                                                 <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
                                                 <p>
-                                                @php
-                                              $tomtat = substr($dulieu->product_content, 0,100);
+                                            @php
+                                              $tomtat = substr($dulieu->product_desc, 0,200);
                                             @endphp
-                                            {{$tomtat.'....'}}
-                                                
+                                            {{$dulieu->product_content}}
+                                            {{$tomtat."..."}}    
                                             </p>
                                                 <h2>{{number_format($dulieu->product_price)}} vnđ</h2>
-                                                <p>{{$dulieu->product_name}}</p>
+                                                <p>{{$dulieu->product_content}}</p>
                                             </a>
-                                            <form action="{{ route('cart.store') }}" method="POST">
-                                             @csrf
-                                                <input type="hidden" name="soluong" value="1">
-                                                <input type="hidden" name="pro_id_hide" value="{{$dulieu->id}}">
-                                                <button type="submit" class="btn btn-fefault cart">
-                                                <i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng
-                                                </button>
-                                            </form>
+                                            
 
                                             </div>
                                         </div>
                                 </div>
                                 <div class="choose">
-                                    <ul class="nav nav-pills nav-justified">
-                                        
+                                    <ul class="nav nav-pills nav-justified"> --}}
+
+                                       {{--  // bumbumman96
                                         <li><form action="{{ route('cart.store') }}" method="POST">
                                              @csrf
                                                 <input type="hidden" name="soluong" value="1">
@@ -54,32 +54,120 @@
                                                 <button type="submit" class="btn btn-fefault cart">
                                                 <i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng
                                                 </button>
+                                                
                                             </form>
-                                        </li>
-                                    </ul>
+                                        </li> 
+                                        <li>
+
+                                     ajax --}}
+
+                        <div class="col-sm-4">
+                            <div class="product-image-wrapper">
+                           
+                                <div class="single-products">
+                                     <div class="productinfo text-center">
+                                        <form>
+                                            @csrf
+                                        <input type="hidden" value="{{$dulieu->id}}" class="cart_product_id_{{$dulieu->id}}">
+                                        <input type="hidden" value="{{$dulieu->product_content}}" class="cart_product_name_{{$dulieu->id}}">
+                                      
+                                        <input type="hidden" value="{{$dulieu->product_quantity}}" class="cart_product_quantity_{{$dulieu->id}}">
+                                        
+                                        <input type="hidden" value="{{$dulieu->product_image}}" class="cart_product_image_{{$dulieu->id}}">
+                                        <input type="hidden" value="{{$dulieu->product_price}}" class="cart_product_price_{{$dulieu->id}}">
+                                        <input type="hidden" value="1" class="cart_product_qty_{{$dulieu->id}}">
+
+                                        <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
+                                            <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" />
+                                            <h4>{{$dulieu->product_content}}</h4>
+                                            <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
+                                            
+
+                                         
+                                         </a>
+                                        <button type="button" class="btn btn-default add-to-cart" data-id_product="{{$dulieu->id}}" 
+                                            name="add-to-cart"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
+                                        </form>
+                                    {{-- </li> --}}
+
+                                    {{-- </ul> --}}
                                 </div>
                             </div>
                         </div>
-                   
+                   </div>
                     @endforeach    
                         
                     </div><!--features_items-->
-                    <hr>
-                    <div class="album"><!--category-tab-->
-                        <div class="col-sm-12">
-                            <ul class="nav nav-tabs">
-                                @php
-                                $i = 0;
-                                @endphp
 
-                            
-                                @foreach($category as $key => $tab_danhmuc)
-                                @php
-                                $i++;
-                                @endphp
+
+                    
+
+                    <hr>        <!--------------------------------recommended_items------------------------------------------------>
+                    <div class="recommended_items">
+                        <h2 class="title text-center">Nổi bật</h2>
+                        
+                        
+                            @foreach ($product as $key=> $dulieu)
+                                      
+                                <div class="col-sm-4">
+                                    <div class="product-image-wrapper">
+                                        <div class="single-products">
+                                      {{--   Hiển thị mặc định --}}
+                                            <div class="productinfo text-center">
+                                                <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
+                                                    <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" width="200" height="150">
+                                                    <h4>{{$dulieu->product_content}}</h4>
+                                                    <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
+                                                    
+                                                </a>                                       
+                                            </div>
+                                       {{--  Phần trượt --}}
+                                            <div class="product-overlay">
+                                                <div class="overlay-content">
+                                                    <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
+                                                        <p>@php
+                                                          $tomtat = substr($dulieu->product_content, 0,100);
+                                                            @endphp                                                       
+                                                        {{$tomtat."..."}} 
+                                                        </p>
+                                                       <h4 style="color:white;">{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h4>
+                                                         
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="choose productinfo text-center">
+                                            
+                                                
+                                        <form>
+                                            @csrf
+                                            <input type="hidden" value="{{$dulieu->id}}" class="cart_product_id_{{$dulieu->id}}">
+                                            <input type="hidden" value="{{$dulieu->product_content}}" class="cart_product_name_{{$dulieu->id}}">
+                                            <input type="hidden" value="{{$dulieu->product_quantity}}" class="cart_product_quantity_{{$dulieu->id}}">                 
+                                            <input type="hidden" value="{{$dulieu->product_image}}" class="cart_product_image_{{$dulieu->id}}">
+                                            <input type="hidden" value="{{$dulieu->product_price}}" class="cart_product_price_{{$dulieu->id}}">
+                                            <input type="hidden" value="1" class="cart_product_qty_{{$dulieu->id}}">
+                                            <button type="button" class="btn btn-default add-to-cart" data-id_product="{{$dulieu->id}}" 
+                                            name="add-to-cart"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
+                                        </form>   
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            @endforeach
+   
+                    </div> <!--/recommended_items-->
+
+                    <hr>    <!-----------------------category-tab sử dụng ajax----------------------->
+                    <div class="album">
+                        <div class="col-sm-12">
+                            <h3>Sản phẩm theo danh mục</h3>
+                            <ul class="nav nav-tabs">                                
+                                @foreach($category as $key => $tab_danhmuc)                       
                                 <form>
                                     @csrf
-                                <li class="{{$i==1 ? 'active' : ''}} demo">
+                                <li class="demo">
                                   <a data-danhmuc_id="{{$tab_danhmuc->id}}" class="tabs_danhmuc" data-toggle="tab" href="#{{$tab_danhmuc->category_slug}}">{{$tab_danhmuc->category_name}}</a>
                                 </li>
                                 </form>
@@ -88,77 +176,8 @@
                                 
                             </ul>
                         </div>
+                   {{--  hiển thị sản phẩm --}}
                         <div id="tab_danhmuctruyen" class="row"></div>
                           
                     </div><!--/category-tab-->
-                    <hr>
-                    <div class="recommended_items"><!--recommended_items-->
-                        <h2 class="title text-center">Nổi bật</h2>
-                        
-                        <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner">
-                                <div class="item active">   
-                                  @foreach ($product as $key=> $dulieu)
-                                          
-                                    <div class="col-sm-3">
-                                        <div class="product-image-wrapper">
-                                            <div class="single-products">
-                                                <div class="productinfo text-center">
-                                                    <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
-                                                    <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" />
-                                                    <h2>{{number_format($dulieu->product_price)}}</h2>
-                                                    <p>{{$dulieu->product_content}}</p>
-                                                    </a>
-                                                    <form action="{{ route('cart.store') }}" method="POST">
-                                                     @csrf
-                                                        <input type="hidden" name="soluong" value="1">
-                                                        <input type="hidden" name="pro_id_hide" value="{{$dulieu->id}}">
-                                                        <button type="submit" class="btn btn-fefault cart">
-                                                        <i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {{-- expr --}}
-                                    @endforeach
-                                </div>
-                                <div class="item">  
-                                    @foreach ($product as $key=> $dulieu)
-                                          
-                                    <div class="col-sm-3">
-                                        <div class="product-image-wrapper">
-                                            <div class="single-products">
-                                                <div class="productinfo text-center">
-                                                    <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" />
-                                                    <h2>{{number_format($dulieu->product_price)}}</h2>
-                                                    <p>{{$dulieu->product_content}}</p>
-                                                    <form action="{{ route('cart.store') }}" method="POST">
-                                                     @csrf
-                                                        <input type="hidden" name="soluong" value="1">
-                                                        <input type="hidden" name="pro_id_hide" value="{{$dulieu->id}}">
-                                                        <button type="submit" class="btn btn-fefault cart">
-                                                        <i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {{-- expr --}}
-                                    @endforeach
-                                    
-                                    </div>
-                            </div>
-                             <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
-                                <i class="fa fa-angle-left"></i>
-                              </a>
-                              <a class="right recommended-item-control" href="#recommended-item-carousel" data-slide="next">
-                                <i class="fa fa-angle-right"></i>
-                              </a>          
-                        </div>
-                    </div><!--/recommended_items-->
 @endsection

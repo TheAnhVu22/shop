@@ -85,7 +85,7 @@
                             <div class="row mb-3">
                                 <label for="blog_desc" class="col-md-4 col-form-label text-md-right">Mô tả:</label>
                                 <div class="col-md-6 border">
-                                    <textarea autocomplete="off" class="form-control" name="blog_desc" rows="3" style="resize: none;">{{$blog->blog_desc}}</textarea>
+                                    <textarea id="noidungblog" autocomplete="off" class="form-control" name="blog_desc" rows="3" style="resize: none;">{!!$blog->blog_desc!!}</textarea>
                                 </div>
                             </div>
 

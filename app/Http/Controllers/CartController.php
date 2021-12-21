@@ -25,6 +25,7 @@ class CartController extends Controller
         $category = CategoryProduct::where('category_status','1')->get();
         $brand = BrandProduct::where('brand_status','1')->get();
         Cart::setGlobalTax(0);
+        // Cart::destroy();
         return view('pages.cart',compact('slide','category','brand'));
     }
 

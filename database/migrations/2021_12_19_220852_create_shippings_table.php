@@ -19,7 +19,8 @@ class CreateShippingsTable extends Migration
             $table->string('shipping_phone');
             $table->string('shipping_email');
             $table->string('shipping_address');
-            $table->integer('customer_id');
+            $table->text('shipping_note');
+            // $table->integer('customer_id');
             $table->timestamps();
         });
     }
