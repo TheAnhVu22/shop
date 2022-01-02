@@ -131,7 +131,7 @@
 
       // add a tag element
 
-      var $tag = $('<span style="color:black;" class="tag ' + htmlEncode(tagClass) + (itemTitle !== null ? ('" title="' + itemTitle) : '') + '"  style="color:black">' + htmlEncode(itemText) + '<span data-role="remove" style="color:black"></span></span>');
+      var $tag = $('<span style="color:black;" class="tag ' + htmlEncode(tagClass) + (itemTitle !== null ? ('" title="' + itemTitle) : '') + '"  style="color:black; background-color: blue;">' + htmlEncode(itemText) + '<span data-role="remove" style="color:gray"></span></span>');
       $tag.data('item', item);
       self.findInputWrapper().before($tag);
       $tag.after(' ');

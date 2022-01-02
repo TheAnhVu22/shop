@@ -31,7 +31,22 @@
 							
 							<div class="product-information"><!--/product-information-->
 								<img src="{{ asset('images/product-details/new.jpg') }}" class="newarrival" alt="" />
-								<img src="{{ asset('images/product-details/rating.png') }}" alt="" />
+
+							{{-- hiển thị số sao --}}
+								<ul class="list-inline rating" title='danh gia'>
+										@for ($count = 1; $count <= 5; $count++)
+											@php
+												if($count<=$rating){
+													$color='color:#ffcc00;';
+												}else{
+													$color='color:#ccc;';
+												}
+											@endphp
+											<li style="{{$color}} font-size: 20px;">&#9733;</li>
+										@endfor
+										({{$rating1}})
+									</ul>
+
 								<h3>{{$product->product_content}}</h3>
 								<p>Mã: {{$product->id}}</p>
 								
@@ -113,7 +128,7 @@
 						<div class="col-sm-12">
 							<ul class="nav nav-tabs">
 								<li><a href="#details" data-toggle="tab"><i class="fas fa-info-circle"></i> Thông tin</a></li>
-							
+								<li><a href="#comment" data-toggle="tab">Bình luận facebook</a></li>
 								<li class="active"><a href="#reviews" data-toggle="tab"><i class="fas fa-comment-dots"></i> Đánh giá</a></li>
 							</ul>
 						</div>
@@ -124,13 +139,57 @@
 							</div>
 
 							
-							<div class="tab-pane fade active in" id="reviews" >
+							<div class="tab-pane fade" id="comment" >
 								<!-- ----------------------------------------- chia sẻ facebook ------------------------------------>
 					          <div class="fb-share-button" data-href="{{$url_canonical}}" data-layout="button_count" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{$url_canonical}}" class="fb-xfbml-parse-ignore">Chia sẻ</a></div>
 					           <!-- ----------------------------------------- comment facebook ------------------------------------>
 					          <div class="fb-comments" data-href="{{\URL::current()}}" data-width="" data-numposts="10"></div>
 							</div>
-							
+
+							<div class="tab-pane fade active in" id="reviews" >
+								<div class="col-sm-12">
+									
+									<style type="text/css">
+										.xx1{
+											border: solid 1px;
+											background-color: #F0EAE8  ;
+											border-radius: 10pxs;
+										}
+									</style>
+									
+									<input type="hidden" name="pro_id" class="pro_id" value="{{$product->id}}">
+																		
+									<div id="binhluan"></div>										
+									<p><b>Viết đánh giá:</b></p>		
+									<ul class="list-inline rating" title='danh gia'>
+										@for ($count = 1; $count <= 5; $count++)
+											@php
+												if($count<=$rating){
+													$color='color:#ffcc00;';
+												}else{
+													$color='color:#ccc;';
+												}
+											@endphp
+											<li title="star_rating" id="{{$product->id}}-{{$count}}" data-index="{{$count}}" data-product_id="{{$product->id}}" data-rating="{{$rating}}" class="rating" style="cursor: pointer; {{$color}} font-size: 30px;">&#9733;</li>
+										@endfor
+										({{$rating1}})
+									</ul>							
+									<form>
+										@csrf
+										<span>
+											<input style="width: 100%; margin-left: 0; color: black;" type="text" name="comment_name" placeholder="Điền tên" class="comment_name" />								
+										</span>
+
+										<textarea style="color: black;" rows="2" name="comment_content" class="comment_content" placeholder="Điền nội dung"></textarea>
+
+										<b>Đánh giá sao: </b> <img src="images/product-details/rating.png" alt="" />
+										<button type="button" class="btn btn-default pull-right guibinhluan">
+											Gửi bình luận
+										</button>
+									</form>
+
+								</div>
+							</div>
 						</div>
 					</div><!--/category-tab-->
 					

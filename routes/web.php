@@ -173,3 +173,12 @@ Route::post('/select_video',[VideoController::class,'select_video'])->name('sele
 Route::post('/xoa_video',[VideoController::class,'xoa_video'])->name('xoa_video');
 Route::post('/them_video',[VideoController::class,'them_video'])->name('them_video');
 Route::post('/update_video',[VideoController::class,'update_video'])->name('update_video');
+
+// comment ajax
+Route::post('/loadcomment',[ProductController::class,'load_comment'])->name('loadcomment');
+Route::post('/them_binhluan',[ProductController::class,'them_binhluan'])->name('them_binhluan');
+Route::get('/binh_luan',[ProductController::class,'binh_luan']);
+Route::post('/xoa_binhluan',[ProductController::class,'xoa_binhluan'])->name('xoa_binhluan');
+Route::post('/traloi_binhluan',[ProductController::class,'traloi_binhluan'])->name('traloi_binhluan');
+
+Route::post('/insert_rating',[ProductController::class,'insert_rating'])->name('insert_rating');

@@ -93,6 +93,13 @@
                                 <input autocomplete="off" type="text" class="form-control" name="product_quantity" value="{{ old('product_quantity') }}" >
                             </div>
                         </div>
+                        <style type="text/css">
+                            .bootstrap-tagsinput .tag {
+                                margin-right: 2px;
+                                color: white;
+                                background-color: #c3d4ef;
+                            }
+                        </style>
                         <div class="row mb-3">
                             <label for="product_tags" class="col-md-4">Tag sản phẩm:</label>
                             <div class="col-md-6">

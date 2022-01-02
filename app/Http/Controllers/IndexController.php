@@ -12,6 +12,7 @@ use App\Models\Blog;
 use App\Models\City;
 use App\Models\CategoryBlog;
 use App\Models\Gallery;
+use App\Models\Rating;
 use Session;
 use Cart;
 session_start();
@@ -91,7 +92,11 @@ class IndexController extends Controller
         $product = Product::with('category','brand')->where('product_slug',$slug)->first();
         $gallery = Gallery::where('product_id',$product->id)->get();
         $related_product = Product::where('category_id',$product->category_id)->whereNotIn('id',[$product->id])->take(3)->get();
-        return view('pages.detailproduct',compact('cate_blog','category','brand','product','related_product','slide','meta_desc','meta_keywords','meta_title','url_canonical','image_og','link_icon','gallery'));
+        $rating = Rating::where('product_id',$product->id)->avg('rating');
+        $rating1=round($rating,1);
+        $rating=round($rating);
+
+        return view('pages.detailproduct',compact('cate_blog','category','brand','product','related_product','slide','meta_desc','meta_keywords','meta_title','url_canonical','image_og','link_icon','gallery','rating','rating1'));
     }
     
     public function tabs_danhmuc(Request $request){

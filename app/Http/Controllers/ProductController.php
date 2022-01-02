@@ -6,6 +6,8 @@ use App\Models\Product;
 use App\Models\BrandProduct;
 use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
+use App\Models\Comment;
+use App\Models\Rating;
 
 class ProductController extends Controller
 {
@@ -194,5 +196,81 @@ class ProductController extends Controller
        }
        Product::find($id)->delete();
        return redirect()->back()->with('status',"xóa thành công");
+    }
+    public function load_comment(Request $request)
+    {
+        $data = $request->all();
+        $id = $data['pro_id'];
+        $output="";
+        $comment = Comment::where('product_id',$id)->where('comment_parent',null)->orderby('id','DESC')->get();
+        $comment_child = Comment::with('product')->where('comment_parent','!=',null)->orderBy('id','ASC')->get();
+        foreach ($comment as $key => $value) {
+            $output.='<div class="row xx1">
+                                        <div class="col-sm-2">
+                                            <img src="'.asset('img/iconuser.png').'" width="100%" alt="" class="img-responsive">
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <p style="color:green"><i class="fas fa-user"></i> '.$value->comment_name.' - '.$value->created_at.'</p>
+                                            <p>'.$value->comment_content.'</p>
+                                            
+                                        </div>
+                                        </div>';
+            foreach ($comment_child as $k => $va) {
+                if($va->comment_parent==$value->id){                    
+            $output.=' <div class="row xx1" style="margin: 5px 40px;">
+                        <div class="col-sm-2" >
+                                    <img src="'.asset('img/iconadmin.png').'" width="50%" alt="" class="img-responsive">
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <p style="color:red;"><i class="fas fa-user"></i> '.$va->comment_name.' - '.$va->created_at.'</p>
+                                        <p>'.$va->comment_content.'</p>
+                                        
+                                    </div> 
+                                    </div>';
+                    }                   
+                } 
+            $output.=' <br>';
+        }
+        return $output;
+    }
+    public function them_binhluan(Request $request)
+    {
+        $data= $request->all();       
+        $comment = new Comment();
+        $comment->comment_name = $data['comment_name'];
+        $comment->comment_content = $data['comment_content'];
+        $comment->product_id = $data['pro_id'];
+        $comment->save();
+    }
+    public function binh_luan()
+    {
+        $comment = Comment::with('product')->where('comment_parent',null)->orderBy('id','DESC')->get();
+        $comment_child = Comment::with('product')->where('comment_parent','!=',null)->orderBy('id','ASC')->get();
+        return view('admincp.product.binhluan',compact('comment','comment_child'));
+    }
+    public function xoa_binhluan(Request $request)
+    {
+        $data= $request->all();
+        Comment::find($data['com_id'])->delete();
+        Comment::where('comment_parent',$data['com_id'])->delete();
+    }
+    public function traloi_binhluan(Request $request)
+    {
+        $data= $request->all();
+        $comment = new Comment();
+        $comment->comment_name = "ATVshop";
+        $comment->comment_content = $data['comment_reply'];
+        $comment->product_id = $data['pro_id'];
+        $comment->comment_parent = $data['com_id'];
+        $comment->save();
+    }
+    public function insert_rating(Request $request)
+    {
+        $data= $request->all();
+        $rating = new Rating();
+        $rating->product_id=$data['product_id'];
+        $rating->rating=$data['index'];
+        $rating->save();
+        return 'ok';
     }
 }

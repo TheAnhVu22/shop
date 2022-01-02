@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        {{-- <meta name="csrf-token" content="{{csrf_token()}}">
+<meta name="csrf-token" content="{{csrf_token()}}">
+        {{-- 
         <meta name="description" content="{{$meta_desc}}"/>
         <meta name="keywords" content="{{$meta_keywords}}"/>
         <meta name="robots" content="index, follow"> 
@@ -768,5 +768,101 @@
     });  
   });
     </script>
+
+    {{-- Bình luận ajax --}}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            load_comment();
+
+            function load_comment() {
+                var pro_id = $('.pro_id').val();
+                // alert(pro_id);               
+                $.ajax({
+                    url:'{{ route('loadcomment') }}',
+                    method:'POST',
+                    headers:{
+                    'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content'),
+                  },
+                    data:{pro_id:pro_id},
+                    success:function(data) {
+                        // alert(data);
+                        $('#binhluan').html(data);
+                    }
+                });
+            }
+
+            $(document).on('click','.guibinhluan',function() {
+                var pro_id = $('.pro_id').val();
+                var comment_name = $('.comment_name').val();
+                var comment_content = $('.comment_content').val();
+                // alert(pro_id);
+                // alert(comment_name);
+                // alert(comment_content);
+                $.ajax({
+                    url:'{{ route('them_binhluan') }}',
+                    method:'POST',
+                    headers:{
+                        'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    data:{pro_id:pro_id,comment_name:comment_name,comment_content:comment_content},
+                    success:function() {
+                        $('.comment_name').val("");
+                        $('.comment_content').val("");
+                        load_comment();
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    <script type="text/javascript">
+        function remove_background(product_id) {
+            for(var count = 1; count <=5 ; count++){
+               $('#'+product_id+'-'+count).css('color','#ccc'); 
+            }
+        }
+        //hover chuột đánh giá sao
+        $(document).on('mouseenter','.rating',function() {
+            var index=$(this).data('index');
+            var product_id=$(this).data('product_id');
+            remove_background(product_id);
+            for(var count = 1; count <=index ; count++){
+               $('#'+product_id+'-'+count).css('color','#ffcc00'); 
+            }
+        });
+        //nhả chuột khỏi đánh giá sao
+        $(document).on('mouseleave','.rating',function() {
+            var index=$(this).data('index');
+            var product_id=$(this).data('product_id');
+            var rating=$(this).data('rating');
+            remove_background(product_id);
+            for(var count = 1; count <=rating ; count++){
+               $('#'+product_id+'-'+count).css('color','#ffcc00'); 
+            }
+        });
+        $(document).on('click','.rating',function() {
+            var index=$(this).data('index');
+            var product_id=$(this).data('product_id');
+            
+            $.ajax({
+                url:'{{ route('insert_rating') }}',
+                method:'POST',
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data:{index:index,product_id:product_id},
+                success:function(data){
+                    if(data=="ok"){
+                        alert('Đánh giá thành công '+index+' sao ');
+                    }
+                    else{
+                        alert('đánh giá thất bại');
+                    }
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

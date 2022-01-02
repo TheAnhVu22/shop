@@ -31,7 +31,7 @@
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('css/material-dashboard.css') }}" rel="stylesheet" />
 
-  
+  <link id="pagestyle" href="{{ asset('css/bootstrap-tagsinput.css') }}" rel="stylesheet" />
 
 </head>
 <body class="g-sidenav-show  bg-gray-200">
@@ -792,5 +792,51 @@ $(document).ready( function () {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script src="{{ asset('js/bootstrap-tagsinput.js') }}"></script>
 
+  <script type="text/javascript">
+    $(document).on('click','.xoa_binhluan',function() {
+      var com_id= $(this).data('com_id');
+      // alert(com_id);
+      if(confirm('Xác nhận xóa !')){
+      $.ajax({
+        url:'{{ route('xoa_binhluan') }}',
+        method:'POST',
+        headers:{
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+        data:{com_id:com_id},
+        success:function() {
+          window.location.reload();
+        }
+      });
+    }
+    }); 
+
+  </script>
+
+  <script type="text/javascript">
+    
+     $(document).on('click','.rep_binhluan',function() {
+      var com_id= $(this).data('com_id');
+      var pro_id= $('.pro_id').val();
+      var comment_reply = $('.comment_reply_'+com_id).val();
+       // alert(comment_reply);
+       //  alert(com_id);
+       //  alert(pro_id);
+      $.ajax({
+        url:'{{ route('traloi_binhluan') }}',
+        method:'POST',
+        headers:{
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+        data:{com_id:com_id,comment_reply:comment_reply,pro_id:pro_id},
+        success:function() {
+          $('.comment_reply_'+com_id).val("");
+          $('#thongbao').html('<span class="text-success">Trả lời bình luận thành công</span>');
+        }
+      });
+     
+    
+    }); 
+  </script>
 </body>
 </html>
