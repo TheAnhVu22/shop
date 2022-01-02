@@ -77,8 +77,8 @@
 
                         <div class="row mb-3">
                             <label for="product_desc" class="col-md-4 col-form-label text-md-right">Mô tả:</label>
-                            <div class="col-md-6 border">
-                                <textarea autocomplete="off" class="form-control" name="product_desc" rows="3" style="resize: none;">{{ old('product_desc') }}</textarea>
+                            <div class="col-md-12 border">
+                                <textarea autocomplete="off" id="noidung_sanpham" class="form-control" name="product_desc" rows="3" style="resize: none;">{{ old('product_desc') }}</textarea>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -91,6 +91,12 @@
                             <label for="product_quantity" class="col-md-4 col-form-label text-md-right">Số lượng:</label>
                             <div class="col-md-6 border">
                                 <input autocomplete="off" type="text" class="form-control" name="product_quantity" value="{{ old('product_quantity') }}" >
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="product_tags" class="col-md-4">Tag sản phẩm:</label>
+                            <div class="col-md-6">
+                                <input type="text" name="product_tags" data-role="tagsinput">
                             </div>
                         </div>
                         <div class="row mb-3">

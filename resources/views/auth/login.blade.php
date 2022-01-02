@@ -54,7 +54,7 @@
                         <div class="row mb-0">
                             <div class="col-md-8 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
-                                    Đăng nhập
+                                    Đăng nhập <i class="fas fa-sign-in-alt"></i>
                                 </button>
 
                                 @if (Route::has('password.request'))
@@ -66,10 +66,14 @@
                         </div>
                         <p style="text-align: center;">Hoặc</p>
                         <div class="form-group row">
-                            <div class="col-4 offset-md-3">
-                                <a href="{{ route('login.google') }}" class="btn btn-primary btn-block">login with google</a>
-                                <a href="{{ route('login.facebook') }}" class="btn btn-primary btn-block">login with facebook</a>
-                                <a href="{{ route('login.github') }}" class="btn btn-primary btn-block">login with github</a>
+                            <div class="col-4">
+                                <a href="{{ route('login.google') }}" class="btn btn-warning btn-block">Đăng nhập bằng google <i class="fab fa-google-plus-square"></i></a>
+                            </div>
+                            <div class="col-4">
+                                <a href="{{ route('login.facebook') }}" class="btn btn-info btn-block">Đăng nhập bằng facebook <i class="fab fa-facebook"></i></a>
+                            </div>
+                            <div class="col-4">
+                                <a href="{{ route('login.github') }}" class="btn btn-success btn-block">Đănh nhập bằng github <i class="fab fa-github-square"></i></a>
                             </div>
                         </div>
                     </form>

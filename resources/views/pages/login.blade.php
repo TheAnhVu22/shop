@@ -17,7 +17,7 @@
                             {{ session('status') }}
                         </div>
                 @endif
-                <div class="col-sm-4 col-sm-offset-1">
+                <div class="col-sm-4">
                     <div class="login-form"><!--login form-->
                         <h2>Đăng nhập</h2>
                         <form action="{{ route('login_customer') }}" method="POST">
@@ -28,13 +28,13 @@
                                 <input type="checkbox" name="luumatkhau" class="checkbox"> 
                                 Lưu mật khẩu
                             </span>
-                            <button type="submit" class="btn btn-success">Đăng nhập</button>
+                            <button type="submit" class="btn btn-success" style="background-color:#29C31F">Đăng nhập</button>
                         </form>
                        <p style="text-align: center;">Hoặc</p>
                         <div class="form-group row">
                             <div class="col-4 offset-md-3">
-                                <a href="{{ route('login_checkout.google') }}" class="btn btn-primary btn-block">login with google</a>
-                                <a href="{{ route('login_checkout.facebook') }}" class="btn btn-primary btn-block">login with facebook</a>
+                                <a href="{{ route('login_checkout.google') }}" class="btn btn-warning btn-block">Đăng nhập bằng google</a>
+                                <a href="{{ route('login_checkout.facebook') }}" class="btn btn-info btn-block">Đăng nhập bằng facebook</a>
                                
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                 <div class="col-sm-1">
                     <h2 class="or">Hoặc</h2>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 ">
                     <div class="signup-form"><!--sign up form-->
                         <h2>Đăng ký</h2>
                         <form action="{{ route('customer.store') }}" method="POST">
@@ -60,7 +60,7 @@
                     <strong>{{$errors->first('g-recaptcha-response')}}</strong>
                 </span>
                 @endif
-                            <button type="submit" class="btn btn-success">Đăng ký</button>
+                            <button type="submit" class="btn btn-success" style="background-color:#D13C0F">Đăng ký</button>
                         </form>
                         
                     </div><!--/sign up form-->

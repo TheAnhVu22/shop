@@ -8,10 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    public function payment()
-    {
-        return $this->belongsTo(Payment::class,'payment_id');
-    }
+    
     public function customer()
     {
         return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');
@@ -22,7 +19,7 @@ class Order extends Model
     }
     public function orderdetail()
     {
-        return $this->hasMany('App\Models\Orderdetail', 'order_id', 'id');
+        return $this->hasMany('App\Models\Orderdetail', 'order_code', 'id');
     }
 
 }

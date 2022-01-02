@@ -23,6 +23,8 @@ class CreateProductsTable extends Migration
             $table->integer('category_id');
             $table->integer('brand_id');
             $table->text('product_slug');
+            $table->text('product_tags');
+            $table->integer('product_sold');
             $table->integer('product_quantity');
             $table->timestamps();
         });

@@ -2,37 +2,30 @@
 @section('content')
 	
 					<div class="product-details"><!--product-details-->
+					<nav aria-label="breadcrumb">
+                      <ol class="breadcrumb" style="background: none;">
+                        <li class="breadcrumb-item"><a href="{{ route('homepage') }}">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('danh_muc',$product->category->category_slug) }}">{{$product->category->category_name}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{$product->product_content}}</li>
+                      </ol>
+                    </nav>
+
 					@if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
 						<div class="col-sm-5">
-							<div class="view-product">
-								<img src="{{ asset('uploads/'.$product->product_image) }}" alt="" />
-								<h3><i class="fas fa-expand"></i></h3>
-							</div>
-							<div id="similar-product" class="carousel slide" data-ride="carousel">
+							<ul id="imageGallery">
+							@foreach ($gallery as $key => $dulieu)
 								
-								  <!-- Wrapper for slides -->
-								    <div class="carousel-inner">
-										<div class="item active row">
-										  <a href=""><img src="{{ asset('uploads/'.$product->product_image) }}" alt="" width="150" height="100"></a>
-										  <a href=""><img src="{{ asset('uploads/'.$product->product_image) }}" alt="" width="150" height="100"></a>
-										 
-										</div>
-										
-									</div>
-
-								  <!-- Controls -->
-								  <a class="left item-control" href="#similar-product" data-slide="prev">
-									<i class="fa fa-angle-left"></i>
-								  </a>
-								  <a class="right item-control" href="#similar-product" data-slide="next">
-									<i class="fa fa-angle-right"></i>
-								  </a>
-							</div>
-
+							  <li data-thumb="{{ asset('uploads/'.$dulieu->gallery_image) }}" data-src="{{ asset('uploads/'.$dulieu->gallery_image) }}">
+							    <img height="300" width="100%" src="{{ asset('uploads/'.$dulieu->gallery_image) }}" />
+							  </li>
+							  {{-- expr --}}
+							@endforeach
+							</ul>
+							
 						</div>
 						<div class="col-sm-7">
 							
@@ -102,7 +95,16 @@
 								<p><b>Danh mục:</b>{{$product->category->category_name}}</p>
 								<p><b>Thương hiệu:</b> {{$product->brand->brand_name}}</p>
 								<p><b>Ngày đăng:</b> {{$product->created_at}}</p>
-								<a href=""><img src="{{ asset('images/product-details/share.png') }}" class="share img-responsive"  alt="" /></a>
+								<!-------------thẻ tag-------------->
+					          <h4><i class="fas fa-tag"></i> Từ khóa: </h4>
+					          @php
+					          // explode: chia chuỗi theo dấu phẩy, hoặc thay bằng dấu khác
+					            $tukhoa = explode(",", $product->product_tags)
+					          @endphp
+					          @foreach ($tukhoa as $key => $tu)
+					         {{--  Str::slug : helper trong laravel, giúp tạo url thân thiện hơn(bằng dấu - thay vì % giữa các từ)  --}}
+					            <a href="{{ url('tag/'.\Str::slug($tu)) }}"><span class="badge badge-info cy-2" style="padding: 10px; "> {{$tu}}</span></a>
+					          @endforeach
 							</div><!--/product-information-->
 						</div>
 					</div><!--/product-details-->
@@ -110,15 +112,15 @@
 					<div class="category-tab shop-details-tab"><!--category-tab-->
 						<div class="col-sm-12">
 							<ul class="nav nav-tabs">
-								<li><a href="#details" data-toggle="tab">Thông tin</a></li>
+								<li><a href="#details" data-toggle="tab"><i class="fas fa-info-circle"></i> Thông tin</a></li>
 							
-								<li class="active"><a href="#reviews" data-toggle="tab">Đánh giá</a></li>
+								<li class="active"><a href="#reviews" data-toggle="tab"><i class="fas fa-comment-dots"></i> Đánh giá</a></li>
 							</ul>
 						</div>
 						<div class="tab-content">
 							<div class="tab-pane fade" id="details" >
 								
-								<div>{{$product->product_desc}}</div>	
+								<div>{!!$product->product_desc!!}</div>	
 							</div>
 
 							
@@ -156,7 +158,12 @@
 
 			                                        <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
 			                                            <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" />
-			                                            <h4>{{$dulieu->product_content}}</h4>
+			                                            <h4> 
+			                                            @php
+			                                                $tomtat= substr($dulieu->product_content,0,22);
+			                                            @endphp
+			                                            	{{$tomtat."..."}}
+			                                            </h4>
 			                                            <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
 			                                            
 

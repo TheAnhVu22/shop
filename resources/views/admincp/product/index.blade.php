@@ -32,7 +32,7 @@
 
     <div class="container-fluid py-4">
       <!---------------------------- Nội dung ----------------------->
-        <a href="{{ route('product.create') }}" class="btn btn-success">Thêm</a>
+        <a href="{{ route('product.create') }}" class="btn btn-success"><i class="fas fa-plus-circle"></i> Thêm</a>
         <div class="row">
         <div class="col-12">
           <div class="card my-4">
@@ -48,11 +48,13 @@
                     <tr>
                       <th class="text-center">STT</th>
                       <th class="text-center">Sản phẩm</th>
-                      {{-- <th class="text-center">Mô tả</th> --}}
+                      <th class="text-center">Ảnh</th>
+                      <th class="text-center">Thư viện ảnh</th>
                       <th class="text-center">Giá</th>
                       <th class="text-center">Số lượng</th>
                       <th class="text-center">Danh mục</th>
                       <th class="text-center">Thương hiệu</th>
+                      <th class="text-center">tag</th>
                       <th class="text-center">Hiển thị</th>
                       <th class="text-center"></th>
                       <th class="text-center"></th>
@@ -70,22 +72,20 @@
                         {{$key}}
                       </td>
                       <td class="text-center">
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="{{ asset('uploads/'.$dulieu->product_image) }}" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{$dulieu->product_content}}</h6>
-                          </div>
-                        </div>
+                      
+                              @php
+                                $tomtat = substr($dulieu->product_content,0,40);
+                              @endphp
+                            {{$tomtat.'...'}}
+                          
                       </td class="text-center">
-                      {{-- <td class="text-center">
-                        @php
-                          $tomtat = substr($dulieu->product_desc, 0,40);
-                        @endphp
-                        {{$tomtat.'....'}}
-                        
-                      </td> --}}
+                      
+                      <td class="text-center">
+                        <img src="{{ asset('uploads/'.$dulieu->product_image) }}" width="100" height="100">
+                      </td>
+                      <td class="text-center">
+                        <a href="{{ route('gallery.show',$dulieu->id) }}" class="btn btn-info">Thêm</a>
+                      </td>
                       <td class="text-center">
                         {{number_format($dulieu->product_price)}}
                       </td>
@@ -97,6 +97,9 @@
                       </td>
                       <td class="text-center">
                         {{$dulieu->brand->brand_name}}
+                      </td>
+                      <td class="text-center">
+                        {{$dulieu->product_tags}}
                       </td>
                       <td class="text-center">
                         

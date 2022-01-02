@@ -7,7 +7,13 @@ use Illuminate\Http\Request;
 
 class BrandProductController extends Controller
 {
-    
+    public function __construct()
+    {
+        // với mỗi quyền thì có các chức năng riêng nữa
+         $this->middleware('permission:add category brand', ['only' => ['create','store']]);
+         $this->middleware('permission:edit delete category brand', ['only' => ['edit','update','destroy']]);
+         
+    }
     public function index()
     {
         $brand = BrandProduct::orderBy('id','DESC')->get();

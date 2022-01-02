@@ -8,7 +8,7 @@
                         </div>
                     @endif
                     <div class="section-bar clearfix">
-                     <h1 class="section-title"><span>từ khóa tìm kiếm: {{$tag}}</span></h1>
+                     <h4>Từ khóa tìm kiếm: {{$tag}}</h4>
                   </div>
                 @php 
                     $count = count($product);
@@ -31,7 +31,12 @@
                                     <div class="productinfo text-center">
                                         <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
                                             <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" width="200" height="150">
-                                            <h4>{{$dulieu->product_content}}</h4>
+                                            <h4>
+                                            @php
+                                                $tomtat= substr($dulieu->product_content,0,22);
+                                            @endphp
+                                            {{$tomtat."..."}}
+                                            </h4>
                                             <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
                                             
                                         </a>                                       

@@ -32,7 +32,7 @@
 
     <div class="container-fluid py-4">
       <!---------------------------- Nội dung ----------------------->
-        <a href="{{ route('slide.create') }}" class="btn btn-success">Thêm</a>
+        <a href="{{ route('slide.create') }}" class="btn btn-success"><i class="fas fa-plus-circle"></i> Thêm</a>
         <div class="row">
         <div class="col-12">
           <div class="card my-4">

@@ -75,17 +75,17 @@
 								</p>
 							</td>
 							<td class="cart_delete">
-								<a class="cart_quantity_delete" href="{{url('/del-product/'.$cart['session_id'])}}"><i class="fa fa-times"></i></a>
+								<a class="cart_quantity_delete" href="{{url('/del-product/'.$cart['session_id'])}}" style="background-color:red"><i class="fa fa-times"></i></a>
 							</td>
 						</tr>
 						
 						@endforeach
 						<tr>
-							<td><input type="submit" value="Cập nhật giỏ hàng" name="update_qty" class="check_out btn btn-default btn-sm"></td>
-							<td><a class="btn btn-default check_out" href="{{url('/del-all-product')}}">Xóa tất cả</a></td>
+							<td><input type="submit" value="Cập nhật giỏ hàng" name="update_qty" class="check_out btn btn-default btn-sm" style="background-color: #AEF809; color: black;"></td>
+							<td><a class="btn btn-default check_out" href="{{url('/del-all-product')}}" style="background-color:#F82E09">Xóa tất cả</a></td>
 							<td>
 								@if(Session::get('coupon'))
-	                          	<a class="btn btn-default check_out" href="{{url('/unset-coupon')}}">Xóa mã khuyến mãi</a>
+	                          	<a class="btn btn-default check_out" href="{{url('/unset_coupon')}}">Xóa mã khuyến mãi</a>
 								@endif
 							</td>
 
@@ -95,11 +95,11 @@
                                 $shipping_id = Session()->get('shipping_id');
                                 @endphp
 								@if ($customer_id == null)
-								<a class="btn btn-default check_out" href="{{ route('login_checkout') }}">Thanh toán</a>
-								 @elseif($customer_id != null && $shipping_id != null)
-								 <a class="btn btn-default check_out" href="{{ route('payment') }}"> Thanh toán</a>
+								<a class="btn btn-default check_out" href="{{ route('login_checkout') }}" style="background-color:#17F809; color:black;">Thanh toán</a>
+								{{--  @elseif($customer_id != null && $shipping_id != null)
+								 <a class="btn btn-default check_out" href="{{ route('payment') }}"> Thanh toán</a> --}}
 								 @else
-                                    <a class="btn btn-default check_out" href="{{ route('checkout') }}"> Thanh toán</a>
+                                    <a class="btn btn-default check_out" href="{{ route('checkout') }}" style="background-color:#17F809; color: black;"> Thanh toán</a>
                                 @endif
 							</td>
 

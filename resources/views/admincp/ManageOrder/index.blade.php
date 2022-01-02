@@ -47,8 +47,8 @@
                     <tr>
                       <th class="text-center">STT</th>
                       <th class="text-center">Tên khách hàng</th>
-                      <th class="text-center">Mã đơn</th>
-                      <th class="text-center">Tổng tiền</th>
+                      <th class="text-center">Mã đơn hàng</th>
+                      <th class="text-center">Ngày đặt</th>
                       <th class="text-center">Trạng thái</th>
                       <th class="text-center">Xem chi tiết</th>
                       <th class="text-center">Xóa đơn</th>
@@ -67,13 +67,17 @@
                       </td class="text-center">
 
                       <td class="text-center">
-                        {{$dulieu->id}}
+                        {{$dulieu->order_code}}
                       </td>
                       <td class="text-center">
-                        {{number_format($dulieu->order_total)}}
+                        {{$dulieu->created_at}}
                       </td>
                       <td class="text-center">
-                        {{$dulieu->order_status}}
+                        @if($dulieu->order_status==1)
+                            Đơn hàng mới
+                          @else 
+                            Đã xử lý
+                          @endif
                       </td>
                       <td class="text-center">
                         <a href="{{ route('view_order_detail',$dulieu->id) }}" class="btn btn-warning btn-sm">
@@ -81,11 +85,9 @@
                         </a>
                       </td>
                       <td class="text-center">
-                        <form action="{{ route('category.destroy',$dulieu->id) }}" method="POST">
-                          @method('DELETE')
-                          @csrf
-                          <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Xác nhận hủy đơn')">Xóa đơn</button>
-                        </form>
+                        <a onclick="return confirm('Bạn có chắc là muốn xóa đơn hàng này ko?')" href="{{URL::to('/delete-order/'.$dulieu->order_code)}}" class="active styling-edit" ui-toggle-class="">
+                        <i class="fa fa-times text-danger text"></i>
+                      </a>
                       </td>
 
                     </tr>

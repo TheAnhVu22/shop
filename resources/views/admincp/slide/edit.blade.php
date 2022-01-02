@@ -69,6 +69,7 @@
                                 <div class="col-md-6 border">
                                     <input type="file" class="form-control" name="slide_image">
                                 </div>
+                                
                                 <img src="{{ asset('uploads/'.$slide->slide_image) }}" alt="" height="200">
                             </div>
                             

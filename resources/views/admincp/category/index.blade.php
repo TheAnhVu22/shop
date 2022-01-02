@@ -32,7 +32,7 @@
 
     <div class="container-fluid py-4">
       <!---------------------------- Nội dung ----------------------->
-        <a href="{{ route('category.create') }}" class="btn btn-success">Thêm</a>
+        <a href="{{ route('category.create') }}" class="btn btn-success"><i class="fas fa-plus-circle"></i> Thêm</a>
         <div class="row">
         <div class="col-12">
           <div class="card my-4">
@@ -89,22 +89,37 @@
                       </td>
                       <td class="text-center">
                         <a href="{{ route('category.edit',$dulieu->id) }}" class="btn btn-warning btn-sm">
-                          Sửa
+                         <i class="fas fa-edit"></i> Sửa
                         </a>
                       </td>
                       <td class="text-center">
                         <form action="{{ route('category.destroy',$dulieu->id) }}" method="POST">
                           @method('DELETE')
                           @csrf
-                          <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Xác nhận xóa')">Xóa</button>
+                          <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Xác nhận xóa')"><i class="fas fa-trash"></i> Xóa</button>
                         </form>
                       </td>
 
                     </tr>
                     {{-- expr --}}
                       @endforeach
+
                   </tbody>
                 </table>
+                <!-----import data---->
+              <form action="{{url('import-category')}}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                  
+                <input type="file" name="file" accept=".xlsx"><br>
+
+               <input type="submit" value="Import file Excel" name="import_category" class="btn btn-warning">
+              </form>
+
+            <!-----export data---->
+               <form action="{{url('export-category')}}" method="POST">
+                  @csrf
+               <input type="submit" value="Export file Excel" name="export_category" class="btn btn-success">
+              </form>
               </div>
             </div>
           </div>

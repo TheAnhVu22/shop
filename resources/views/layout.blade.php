@@ -43,6 +43,11 @@
     <link href="{{ asset('css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('css/responsive.css') }}" rel="stylesheet">
+
+    {{-- css cho gallery ảnh trong chi tiết sản phẩm --}}
+    <link href="{{ asset('css/lightgallery.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/lightslider.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/prettify.css') }}" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -53,7 +58,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('images/ico/apple-touch-icon-72-precomposed.png') }}">
     <link rel="apple-touch-icon-precomposed" href="{{ asset('images/ico/apple-touch-icon-57-precomposed.png') }}">
 
-        
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/owl.carousel.min.css') }}">
 </head>
 <body>
     <header id="header"><!--header-->
@@ -69,10 +74,10 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="social-icons pull-right">
-                            <ul class="nav navbar-nav">
-                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                       <div class="contactinfo pull-right">
+                            <ul class="nav nav-pills">
+                                <li><a href="#"><i class="fas fa-clock"></i> 8am - 6pm</a></li>
+                                <li><a href="#"><i class="far fa-calendar-alt"></i> Thứ 2 - Thứ 6</a></li>
                             </ul>
                         </div>
                     </div>
@@ -121,9 +126,9 @@
                                     $customer_id = Session()->get('customer_id');
                                 @endphp
                                 @if ($customer_id == null)
-                                    <li><a href="{{ route('login_checkout') }}"><i class="fa fa-lock"></i> Đăng nhập</a></li>
+                                    <li><a href="{{ route('login_checkout') }}"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a></li>
                                 @else
-                                    <li><a href="{{ route('logout_checkout') }}"><i class="fa fa-lock"></i> Đăng xuất</a></li>
+                                    <li><a href="{{ route('logout_checkout') }}"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                                 @endif
                                 
                                 
@@ -150,20 +155,26 @@
                             <ul class="nav navbar-nav collapse navbar-collapse">
                                 <li><a href="{{ route('homepage') }}" class="active">Trang chủ</a></li>
                                 <li class="dropdown"><a href="#">Danh mục<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
+                                    <ul role="menu" class="sub-menu" style="background-color:black;">
                                         @foreach ($category as $key => $dulieu)
                                             <li><a href="{{ route('danh_muc',$dulieu->category_slug) }}">{{$dulieu->category_name}}</a></li>
                                         @endforeach 
                                     </ul>
                                 </li> 
                                 <li class="dropdown"><a href="#">Thương hiệu<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
+                                    <ul role="menu" class="sub-menu" style="background-color:black;">
                                          @foreach ($brand as $key => $dulieu)
                                             <li><a href="{{ route('thuong_hieu',$dulieu->brand_slug) }}">{{$dulieu->brand_name}}</a></li>
                                         @endforeach 
                                     </ul>
                                 </li> 
-                                <li><a href="{{ route('tin_tuc') }}">Thông tin</a></li>
+                                <li class="dropdown"><a href="#">Tin tức<i class="fa fa-angle-down"></i></a>
+                                    <ul role="menu" class="sub-menu" style="background-color:black;">
+                                         @foreach ($cate_blog as $key => $dulieu)
+                                            <li><a href="{{ route('tin_tuc',$dulieu->cate_blog_slug) }}">{{$dulieu->cate_blog_name}}</a></li>
+                                        @endforeach 
+                                    </ul>
+                                </li>
                                 <li><a href="{{ route('lien_he') }}">Liên hệ</a></li>
                             </ul>
                         </div>
@@ -173,9 +184,9 @@
                             <form autocomplete="off" class="form-inline my-2 my-lg-0" action="{{url('tim_kiem')}}" method="POST">
                             @csrf
                             <div class="row">
-                              <input class="form-control mr-sm-2" id="keywords" type="search" name="tukhoa" placeholder="Tìm kiếm...." aria-label="Search">
+                              <input class="form-control mr-sm-2" id="keywords" type="search" name="tukhoa"aria-label="Search" style="background-color:#FFF1ED ; color: black;">
                               
-                              <button class="btn btn-success my-2 my-sm-0" type="submit">Tìm kiếm <i class="fas fa-search"></i></button>
+                              <button class="btn btn-danger my-2 my-sm-0" type="submit">Tìm kiếm <i class="fas fa-search"></i></button>
                               </div>
                               <div id="search_ajax"></div>
                         </form>
@@ -237,26 +248,28 @@
             <div class="row">
                 <div class="col-sm-3">
                     <div class="left-sidebar">
-                        <h2>Danh mục</h2>
+                        <h2>Danh mục <i class="fas fa-bars"></i></h2>
                         <div class="panel-group category-products" id="accordian"><!--category-productsr-->
 
                             {{-- <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordian" href="#sportswear">
+                                        <a data-toggle="collapse" data-parent="#accordian" href="#phukien">
                                             <span class="badge pull-right"><i class="fa fa-plus"></i></span>
                                             Phụ kiện
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="sportswear" class="panel-collapse collapse">
+                                <div id="phukien" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <ul>
-                                            <li><a href="#">Nike </a></li>
-                                            <li><a href="#">Under Armour </a></li>
-                                            <li><a href="#">Adidas </a></li>
-                                            <li><a href="#">Puma</a></li>
-                                            <li><a href="#">ASICS </a></li>
+                                             @foreach ($category as $key => $dulieu)
+                                            <li><div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title"><a href="{{ route('danh_muc',$dulieu->category_slug) }}">{{$dulieu->category_name}}</a></h4>
+                                </div>
+                            </div></li>
+                                            @endforeach 
                                         </ul>
                                     </div>
                                 </div>
@@ -272,18 +285,30 @@
                         </div><!--/category-products-->
                     
                         <div class="brands_products"><!--brands_products-->
-                            <h2>Thương hiệu</h2>
+                            <h2>Thương hiệu <i class="fas fa-star-half-alt"></i></h2>
                             <div class="brands-name">
                                 <ul class="nav nav-pills nav-stacked">
                                  @foreach ($brand as $key => $dulieu)   
-                                    <li><a href="{{ route('thuong_hieu',$dulieu->brand_slug) }}"> <span class="pull-right">(50)</span>{{$dulieu->brand_name}}</a></li>
-                                  @endforeach  
+                                    <li><a href="{{ route('thuong_hieu',$dulieu->brand_slug) }}"> <span class="pull-right">
+                                        @php
+                                            $dem=0;
+                                        @endphp
+                                        @foreach ($dulieu->product as $k1 => $v1)
+                                        @php
+                                            $dem++;
+                                        @endphp
+
+                                    @endforeach
+                                    ({{$dem}})
+                                </span>{{$dulieu->brand_name}}</a></li>
+                                  @endforeach 
+
                                 </ul>
                             </div>
                         </div><!--/brands_products-->
                         
                         <div class="price-range"><!--price-range-->
-                            <h2>Lọc giá</h2>
+                            <h2>Lọc giá <i class="fas fa-search-dollar"></i></h2>
                             <div class="well text-center">
                                  <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" ><br />
                                  <b class="pull-left">0 vnđ</b> <b class="pull-right">50000000 vnđ</b>
@@ -596,5 +621,152 @@
           }); 
       </script>
 
+      <script type="text/javascript">
+        $(document).ready(function(){
+            $('.choose').on('change',function(){
+            var action = $(this).attr('id');
+            var ma_id = $(this).val();
+            var _token = $('input[name="_token"]').val();
+            var result = '';
+           
+            if(action=='city'){
+                result = 'province';
+            }else{
+                result = 'wards';
+            }
+            $.ajax({
+                url : '{{url('/select-delivery-home')}}',
+                method: 'POST',
+                data:{action:action,ma_id:ma_id,_token:_token},
+                success:function(data){
+                   $('#'+result).html(data);     
+                }
+            });
+        });
+        });
+          
+    </script>
+    <!----------- tính phí vận chuyển ----------->
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.calculate_delivery').click(function(){
+                var matp = $('.city').val();
+                var maqh = $('.province').val();
+                var xaid = $('.wards').val();
+                var _token = $('input[name="_token"]').val();
+                if(matp == '' && maqh =='' && xaid ==''){
+                    alert('Làm ơn chọn để tính phí vận chuyển');
+                }else{
+                    $.ajax({
+                    url : '{{url('/calculate-fee')}}',
+                    method: 'POST',
+                    data:{matp:matp,maqh:maqh,xaid:xaid,_token:_token},
+                    success:function(){
+                        location.reload(); 
+                       // alert(data);
+                    }
+                    });
+                } 
+        });
+    });
+    </script>
+
+    <script type="text/javascript">
+
+          $(document).ready(function(){
+            $('.send_order').click(function(){
+                swal({
+                  title: "Xác nhận đơn hàng",
+                  text: "Đơn hàng sẽ không được hoàn trả khi đặt,bạn có muốn đặt không?",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonClass: "btn-danger",
+                  confirmButtonText: "Cảm ơn, Mua hàng",
+
+                    cancelButtonText: "Đóng,chưa mua",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function(isConfirm){
+                     if (isConfirm) {
+                        var shipping_email = $('.shipping_email').val();
+                        var shipping_name = $('.shipping_name').val();
+                        var shipping_address = $('.shipping_address').val();
+                        var shipping_phone = $('.shipping_phone').val();
+                        var shipping_note = $('.shipping_note').val();
+                        var shipping_method = $('.payment_select').val();
+                        var order_fee = $('.order_fee').val();
+                        var order_coupon = $('.order_coupon').val();
+                        var _token = $('input[name="_token"]').val();
+
+                        $.ajax({
+                            url: '{{url('/confirm-order')}}',
+                            method: 'POST',
+                            data:{shipping_email:shipping_email,shipping_name:shipping_name,shipping_address:shipping_address,shipping_phone:shipping_phone,shipping_note:shipping_note,_token:_token,order_fee:order_fee,order_coupon:order_coupon,shipping_method:shipping_method},
+                            success:function(){
+                               swal("Đơn hàng", "Đơn hàng của bạn đã được gửi thành công", "success");
+                            }
+                        });
+
+                        window.setTimeout(function(){ 
+                            location.reload();
+                        } ,3000);
+
+                      } else {
+                        swal("Đóng", "Đơn hàng chưa được gửi", "error");
+
+                      }
+              
+                });
+
+               
+            });
+        });
+    
+
+    </script>
+
+<script type="text/javascript" src="{{ asset('js/owl.carousel.js') }}"></script>
+    <script type="text/javascript">
+        $('.owl-carousel').owlCarousel({
+    loop:true,
+    margin:10,
+    nav:true,
+    responsive:{
+        0:{
+            items:1
+        },
+        600:{
+            items:2
+        },
+        1000:{
+            items:3
+        }
+    }
+})
+    </script>
+
+    {{-- script cho gallery ảnh trong chi tiết sản phẩm --}}
+    <script type="text/javascript" src="{{ asset('js/lightslider.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/lightgallery-all.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/prettify.js') }}"></script>
+    <script type="text/javascript">
+          $(document).ready(function() {
+    $('#imageGallery').lightSlider({
+        gallery:true,
+        item:1,
+        loop:true,
+        thumbItem:3,
+        slideMargin:0,
+        enableDrag: false,
+        currentPagerPosition:'left',
+        onSliderLoad: function(el) {
+            el.lightGallery({
+                selector: '#imageGallery .lslide'
+            });
+        }   
+    });  
+  });
+    </script>
 </body>
 </html>

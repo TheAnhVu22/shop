@@ -12,6 +12,12 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryBlogController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\VideoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,14 +40,24 @@ Route::resource('brand', BrandProductController::class)->middleware('auth');
 Route::resource('product', ProductController::class)->middleware('auth');
 Route::resource('blog', BlogController::class)->middleware('auth');
 Route::resource('slide', SlideController::class)->middleware('auth');
+Route::resource('cate_blog', CategoryBlogController::class)->middleware('auth');
 Route::resource('cart', CartController::class);
 Route::resource('customer', CustomerController::class);
+Route::resource('coupon', CouponController::class);
 
+// thư viện ảnh của sản phẩm
+Route::resource('gallery', GalleryController::class)->middleware('auth');
+Route::post('select_gallery',[GalleryController::class, 'select_gallery'])->name('select_gallery');
+Route::post('insert_gallery/{pro_id}',[GalleryController::class, 'insert_gallery'])->name('insert_gallery');
+Route::post('update_gallery_name',[GalleryController::class, 'update_gallery_name'])->name('update_gallery_name');
+Route::post('delete_gallery',[GalleryController::class, 'delete_gallery'])->name('delete_gallery');
+Route::post('update_gallery',[GalleryController::class, 'update_gallery'])->name('update_gallery');
+
+// menu, trang chủ người dùng
 Route::get('/danh_muc/{slug}',[IndexController::class, 'danhmuc'])->name('danh_muc');
 Route::get('/thuong_hieu/{slug}',[IndexController::class, 'thuonghieu'])->name('thuong_hieu');
-Route::get('/tin_tuc',[IndexController::class, 'tintuc'])->name('tin_tuc');
+Route::get('/tin_tuc/{slug}',[IndexController::class, 'tintuc'])->name('tin_tuc');
 Route::get('/lien_he',[IndexController::class, 'lienhe'])->name('lien_he');
-
 Route::get('/chi_tiet_san_pham/{slug}',[IndexController::class, 'chitietsanpham'])->name('chi_tiet_san_pham');
 Route::get('/view_blog/{slug}', [IndexController::class,'view_blog'])->name('view_blog');
 Route::post('/tabs_danhmuc', [IndexController::class,'tabs_danhmuc'])->name('tabs_danhmuc');
@@ -65,9 +81,17 @@ Route::get('/payment', [CheckoutController::class,'payment'])->name('payment');
 Route::post('/order_place', [CheckoutController::class,'order_place'])->name('order_place');
 
 // quản lý đơn hàng
-Route::get('/manage_order', [CheckoutController::class,'manage_order'])->name('manage_order');
-Route::get('/view_order_detail/{id}', [CheckoutController::class,'view_order_detail'])->name('view_order_detail');
+Route::group(['middleware' => ['auth','role:Manager|admin']], function() {
+	Route::get('/manage_order', [CheckoutController::class,'manage_order'])->name('manage_order');
+	Route::get('/view_order_detail/{id}', [CheckoutController::class,'view_order_detail'])->name('view_order_detail');
+	// cập nhật đơn hàng trong admin
+	Route::post('/update-order-qty',[CheckoutController::class,'update_order_qty']);
 
+	// xóa order và in hóa đơn PDF
+	Route::get('/delete-order/{order_code}',[CheckoutController::class,'order_code']);
+	Route::get('/print-order/{checkout_code}',[CheckoutController::class,'print_order']);
+
+});  
 //send mail
 Route::get('/send_mail', [HomeController::class,'send_mail'])->name('send_mail');
 
@@ -105,3 +129,47 @@ Route::get('/del-all-product',[CheckoutController::class,'delete_all_product']);
 //tìm kiếm ajax
 Route::post('/tim_kiem', [IndexController::class,'timkiem']);
 Route::post('/autocomplete-ajax',[IndexController::class,'autocomplete_ajax']);
+Route::get('/tag/{tag}', [IndexController::class, 'tag']);
+
+// mã giảm giá 
+Route::post('/check-coupon',[CheckoutController::class,'check_coupon']);
+Route::get('/unset_coupon',[CheckoutController::class,'unset_coupon']);
+
+// quản lý phí Vận chuyển admin 
+Route::get('/delivery',[DeliveryController::class,'delivery'])->name('delivery');
+Route::post('/select-delivery',[DeliveryController::class,'select_delivery']);
+Route::post('/insert-delivery',[DeliveryController::class,'insert_delivery']);
+Route::post('/select-feeship',[DeliveryController::class,'select_feeship']);
+Route::post('/update-delivery',[DeliveryController::class,'update_delivery']);
+
+// chọn địa chỉ thanh toán
+Route::post('/calculate-fee',[CheckoutController::class,'calculate_fee']);
+Route::post('/select-delivery-home',[CheckoutController::class,'select_delivery_home']);
+Route::post('/confirm-order',[CheckoutController::class,'confirm_order']);
+Route::get('/del-fee',[CheckoutController::class,'del_fee']);
+
+
+// nhập xuất dữ liệu ra file excel
+Route::post('/export-category',[DeliveryController::class ,'export_category']);
+Route::post('/import-category',[DeliveryController::class ,'import_category']);
+
+// quản lý, phân quyền user
+Route::group(['middleware' => ['auth','role:admin']], function() {
+	Route::get('/manage_user', [UserController::class ,'index']);
+	Route::delete('/delete_user/{id}', [UserController::class ,'delete_user']);
+
+	Route::get('/assign_role/{id}', [UserController::class ,'assign_role']);
+	Route::get('/assign_per/{id}', [UserController::class ,'assign_per']);
+
+	Route::post('/them_vaitro',[UserController::class ,'them_vaitro']);
+	Route::post('/phan_vaitro/{id}',[UserController::class ,'phan_vaitro']);
+	Route::post('/them_quyen',[UserController::class ,'them_quyen']);
+	Route::post('/phan_quyen/{id}',[UserController::class ,'phan_quyen']);
+});  
+
+// Video
+Route::get('/video',[VideoController::class,'video']);
+Route::post('/select_video',[VideoController::class,'select_video'])->name('select_video');
+Route::post('/xoa_video',[VideoController::class,'xoa_video'])->name('xoa_video');
+Route::post('/them_video',[VideoController::class,'them_video'])->name('them_video');
+Route::post('/update_video',[VideoController::class,'update_video'])->name('update_video');

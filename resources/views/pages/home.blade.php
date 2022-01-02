@@ -79,7 +79,12 @@
 
                                         <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
                                             <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" />
-                                            <h4>{{$dulieu->product_content}}</h4>
+                                            <h4> 
+                                                @php
+                                                    $tomtat= substr($dulieu->product_content,0,22);
+                                                @endphp
+                                                    {{$tomtat."..."}}
+                                            </h4>
                                             <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
                                             
 
@@ -106,57 +111,39 @@
                     <div class="recommended_items">
                         <h2 class="title text-center">Nổi bật</h2>
                         
-                        
+                        <div class="owl-carousel owl-theme">
                             @foreach ($product as $key=> $dulieu)
-                                      
-                                <div class="col-sm-4">
-                                    <div class="product-image-wrapper">
-                                        <div class="single-products">
-                                      {{--   Hiển thị mặc định --}}
-                                            <div class="productinfo text-center">
-                                                <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
-                                                    <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" width="200" height="150">
-                                                    <h4>{{$dulieu->product_content}}</h4>
-                                                    <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
-                                                    
-                                                </a>                                       
-                                            </div>
-                                       {{--  Phần trượt --}}
-                                            <div class="product-overlay">
-                                                <div class="overlay-content">
-                                                    <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
-                                                        <p>@php
-                                                          $tomtat = substr($dulieu->product_content, 0,100);
-                                                            @endphp                                                       
-                                                        {{$tomtat."..."}} 
-                                                        </p>
-                                                       <h4 style="color:white;">{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h4>
-                                                         
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="choose productinfo text-center">
-                                            
-                                                
-                                        <form>
+
+                                <div class="item">
+                                    
+                                    <form>
                                             @csrf
-                                            <input type="hidden" value="{{$dulieu->id}}" class="cart_product_id_{{$dulieu->id}}">
-                                            <input type="hidden" value="{{$dulieu->product_content}}" class="cart_product_name_{{$dulieu->id}}">
-                                            <input type="hidden" value="{{$dulieu->product_quantity}}" class="cart_product_quantity_{{$dulieu->id}}">                 
-                                            <input type="hidden" value="{{$dulieu->product_image}}" class="cart_product_image_{{$dulieu->id}}">
-                                            <input type="hidden" value="{{$dulieu->product_price}}" class="cart_product_price_{{$dulieu->id}}">
-                                            <input type="hidden" value="1" class="cart_product_qty_{{$dulieu->id}}">
-                                            <button type="button" class="btn btn-default add-to-cart" data-id_product="{{$dulieu->id}}" 
-                                            name="add-to-cart"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
-                                        </form>   
+                                        <input type="hidden" value="{{$dulieu->id}}" class="cart_product_id_{{$dulieu->id}}">
+                                        <input type="hidden" value="{{$dulieu->product_content}}" class="cart_product_name_{{$dulieu->id}}">
+                                      
+                                        <input type="hidden" value="{{$dulieu->product_quantity}}" class="cart_product_quantity_{{$dulieu->id}}">
+                                        
+                                        <input type="hidden" value="{{$dulieu->product_image}}" class="cart_product_image_{{$dulieu->id}}">
+                                        <input type="hidden" value="{{$dulieu->product_price}}" class="cart_product_price_{{$dulieu->id}}">
+                                        <input type="hidden" value="1" class="cart_product_qty_{{$dulieu->id}}">
+
+                                        <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
+                                            <img src="{{ asset('uploads/'.$dulieu->product_image) }}" alt="" height="230">
+                                            <h4>@php
+                                                $tomtat = substr($dulieu->product_content,0,50);
+                                            @endphp
+                                                {{$tomtat."..."}}</h4>
+                                            <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
                                             
-                                        </div>
+
+                                         
+                                         </a>
+                                        <button type="button" class="btn btn-default add-to-cart" data-id_product="{{$dulieu->id}}" 
+                                            name="add-to-cart"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
+                                        </form>
                                     </div>
-                                </div>
-                                
                             @endforeach
-   
+                        </div> 
                     </div> <!--/recommended_items-->
 
                     <hr>    <!-----------------------category-tab sử dụng ajax----------------------->
@@ -180,4 +167,6 @@
                         <div id="tab_danhmuctruyen" class="row"></div>
                           
                     </div><!--/category-tab-->
+
+</div>
 @endsection

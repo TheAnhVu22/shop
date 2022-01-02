@@ -3,26 +3,24 @@
 				<div class="col-sm-12">
 					<div class="blog-post-area">
 						<h2 class="title text-center">Nội dung bài viết</h2>
+						<nav aria-label="breadcrumb">
+                      <ol class="breadcrumb" style="background: none;">
+                        <li class="breadcrumb-item"><a href="{{ route('homepage') }}">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('tin_tuc',$blog->categoryblog->cate_blog_slug) }}">{{$blog->categoryblog->cate_blog_name}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{$blog->blog_name}}</li>
+                      </ol>
+                    </nav>
 						<div class="single-blog-post">
-							<h3>{{$blog->blog_name}}</h3>
+							<h3 style="text-align:center; color: black;">{{$blog->blog_name}}</h3>
 							<div class="post-meta">
 								<ul>
 									<li><i class="fa fa-user"></i>{{$blog->blog_author}}</li>
 									
 									<li><i class="fa fa-calendar"></i>{{$blog->created_at}}</li>
 								</ul>
-								<span>
-									<i class="fa fa-star"></i>
-									<i class="fa fa-star"></i>
-									<i class="fa fa-star"></i>
-									<i class="fa fa-star"></i>
-									<i class="fa fa-star-half-o"></i>
-								</span>
+								
 							</div>
-							<a href="">
-								<img src="{{ asset('uploads/'.$blog->blog_image) }}" alt="" width="100%" height="250">
-							</a>
-							<span>{!!$blog->blog_desc!!}</span>
+							{!!$blog->blog_desc!!}
 							
 						</div>
 					</div><!--/blog-post-area-->

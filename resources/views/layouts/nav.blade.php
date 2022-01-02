@@ -17,6 +17,17 @@
                 <span class="nav-link-text ms-1">Trang chủ</span>
               </a>
             </li>
+            @role('admin')
+            <li class="nav-item">
+              <a class="nav-link text-white " href="{{ url('/manage_user') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  
+                </div>
+                <span class="nav-link-text ms-1">User</span>
+              </a>
+            </li>
+            @endrole
+            @hasanyrole('Manager|admin')
             <li class="nav-item">
               <a class="nav-link text-white " href="{{ route('manage_order') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -25,6 +36,8 @@
                 <span class="nav-link-text ms-1">Đơn hàng</span>
               </a>
             </li>
+            @endhasanyrole
+            @hasanyrole('Manager|admin|Staff')
             <li class="nav-item">
               <a class="nav-link text-white " href="{{ route('category.index') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -50,21 +63,36 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="../pages/rtl.html">
-                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
+              <a class="nav-link text-white " href="{{ route('coupon.index') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">  
                 </div>
-                <span class="nav-link-text ms-1">RTL</span>
+                <span class="nav-link-text ms-1">Mã giảm giá</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="../pages/notifications.html">
-                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="material-icons opacity-10">notifications</i>
+              <a class="nav-link text-white " href="{{ route('delivery') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">  
                 </div>
-                <span class="nav-link-text ms-1">Notifications</span>
+                <span class="nav-link-text ms-1">Phí vận chuyển</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link text-white " href="{{ route('cate_blog.index') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  
+                </div>
+                <span class="nav-link-text ms-1">Danh mục bài viết</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white " href="{{ url('/video') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  
+                </div>
+                <span class="nav-link-text ms-1">Video</span>
+              </a>
+            </li>
+            @endhasanyrole
             <li class="nav-item mt-3">
               <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages</h6>
             </li>
@@ -84,7 +112,7 @@
             <a class="dropdown-item" href="{{ route('logout') }}"
                    onclick="event.preventDefault();
                                  document.getElementById('logout-form').submit();">
-                    {{ __('Logout') }}
+                    Đăng xuất
                 </a>
 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

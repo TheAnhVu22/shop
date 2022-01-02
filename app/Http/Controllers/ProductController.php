@@ -9,11 +9,15 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        // có 1 trong các quyền này thì sẽ vào đc index + show
+        $this->middleware('permission:view product|edit product|delete product|add product',['only' => ['index','show']]);
+        // với mỗi quyền thì có các chức năng riêng nữa
+         $this->middleware('permission:add product', ['only' => ['create','store']]);
+         $this->middleware('permission:edit product', ['only' => ['edit','update']]);
+         $this->middleware('permission:delete product', ['only' => ['destroy']]);
+    }
     public function index()
     {
         $product= Product::with('category','brand')->orderBy('id','DESC')->get();
@@ -45,6 +49,7 @@ class ProductController extends Controller
                 'product_content' => 'required|unique:products|max:255',
                 'product_desc' => 'required',
                 'product_slug' => 'required',
+                'product_tags' => 'required',
                 'product_quantity' => 'required|integer',
                 'product_image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height:100,max_width:1000,max_height:1000',
 
@@ -67,6 +72,7 @@ class ProductController extends Controller
         $product = new Product();
         $product->product_content = $data['product_content'];
         $product->product_desc = $data['product_desc'];
+        $product->product_tags = $data['product_tags'];
         $product->product_price = $data['product_price'];
         $product->category_id = $data['category_id'];
         $product->brand_id = $data['brand_id'];
@@ -125,6 +131,7 @@ class ProductController extends Controller
                 'product_content' => 'required|max:255',
                 'product_desc' => 'required',
                 'product_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height:100,max_width:1000,max_height:1000',
+                'product_tags' => 'required',
                 'product_slug' => 'required',
                 'product_quantity' => 'required|integer',
                 'product_price' => 'required|integer',
@@ -147,6 +154,7 @@ class ProductController extends Controller
         $product->product_content = $data['product_content'];
         $product->product_desc = $data['product_desc'];
         $product->product_price = $data['product_price'];
+        $product->product_tags = $data['product_tags'];
         $product->category_id = $data['category_id'];
         $product->brand_id = $data['brand_id'];
         $product->product_status = $data['product_status'];

@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use Illuminate\Http\Request;
-
+use App\Models\CategoryBlog;
 class BlogController extends Controller
 {
 
     public function index()
     {
-        $blog= Blog::orderBy('id','DESC')->get();
+        $blog= Blog::with('categoryblog')->orderBy('id','DESC')->get();
         return view('admincp.blog.index',compact('blog'));
     }
 
@@ -21,7 +21,8 @@ class BlogController extends Controller
      */
     public function create()
     {
-        return view('admincp.blog.create');
+        $cate_blog = CategoryBlog::orderBy('id','DESC')->where('cate_blog_status',1)->get();
+        return view('admincp.blog.create',compact('cate_blog'));
     }
 
     /**
@@ -37,7 +38,8 @@ class BlogController extends Controller
                 'blog_name' => 'required|unique:blogs|max:255',
                 'blog_author' => 'required|max:255',
                 'blog_desc' => 'required',
-                'blog_slug' => 'required',                
+                'blog_slug' => 'required',
+                'cate_blog_slug' => 'required',                
                 'blog_image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height:100,max_width:1000,max_height:1000',
             ],
             [
@@ -54,6 +56,7 @@ class BlogController extends Controller
         $blog->blog_desc = $data['blog_desc'];
         $blog->blog_author = $data['blog_author'];
         $blog->blog_slug = $data['blog_slug'];
+        $blog->cate_blog_id = $data['cate_blog_slug'];
         // xử lý ảnh
         $get_image = $request->blog_image; 
         $path = 'uploads/';
@@ -86,8 +89,9 @@ class BlogController extends Controller
      */
     public function edit($id)
     {
-         $blog= Blog::find($id);
-        return view('admincp.blog.edit',compact('blog'));
+        $blog= Blog::find($id);
+        $cate_blog = CategoryBlog::orderBy('id','DESC')->where('cate_blog_status',1)->get();
+        return view('admincp.blog.edit',compact('blog','cate_blog'));
     }
 
     /**
@@ -104,7 +108,8 @@ class BlogController extends Controller
                 'blog_name' => 'required|max:255',
                 'blog_author' => 'required|max:255',
                 'blog_desc' => 'required',
-                'blog_slug' => 'required',                
+                'blog_slug' => 'required',
+                'cate_blog_slug' => 'required',                
                 'blog_image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height:100,max_width:1000,max_height:1000',
             ],
             [
@@ -119,6 +124,7 @@ class BlogController extends Controller
         $blog->blog_desc = $data['blog_desc'];
         $blog->blog_author = $data['blog_author'];
         $blog->blog_slug = $data['blog_slug'];
+        $blog->cate_blog_id = $data['cate_blog_slug'];
         // xử lý ảnh
         $get_image = $request->blog_image; 
         if($get_image){
@@ -144,7 +150,7 @@ class BlogController extends Controller
      * @param  \App\Models\blog  $blog
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         $blog = Blog::find($id);
        $path = 'uploads/'.$blog->blog_image;

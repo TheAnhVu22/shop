@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 
 class CategoryProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        // với mỗi quyền thì có các chức năng riêng nữa
+         $this->middleware('permission:add category brand', ['only' => ['create','store']]);
+         $this->middleware('permission:edit delete category brand', ['only' => ['edit','update','destroy']]);
+         
+    }
     public function index()
     {
         $category = CategoryProduct::orderBy('id','DESC')->get();

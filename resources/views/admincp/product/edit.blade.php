@@ -75,15 +75,16 @@
                                 <input type="file" class="form-control" name="product_image">
                             </div>
                             <hr>
+                            <div class="col-2">
                             <img src="{{ asset('uploads/'.$product->product_image) }}" alt="" height="200">
-                            
+                            </div>
                             
                         </div>
 
                         <div class="row mb-3">
                             <label for="product_desc" class="col-md-4 col-form-label text-md-right">Mô tả:</label>
-                            <div class="col-md-6 border">
-                                <textarea autocomplete="off" class="form-control" name="product_desc" rows="3" style="resize: none;">{{$product->product_desc}}</textarea>
+                            <div class="col-md-12 border">
+                                <textarea autocomplete="off" id="noidung_sanpham" class="form-control" name="product_desc" rows="3" style="resize: none;">{{$product->product_desc}}</textarea>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -96,6 +97,12 @@
                             <label for="product_quantity" class="col-md-4 col-form-label text-md-right">Số lượng:</label>
                             <div class="col-md-6 border">
                                 <input autocomplete="off" type="text" class="form-control" name="product_quantity" value="{{$product->product_quantity}}" >
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="product_tags" class="col-md-4">Tag sản phẩm:</label>
+                            <div class="col-md-6">
+                                <input type="text" name="product_tags" data-role="tagsinput" value="{{$product->product_tags}}">
                             </div>
                         </div>
                         <div class="row mb-3">

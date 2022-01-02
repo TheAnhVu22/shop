@@ -9,6 +9,9 @@ use App\Models\CategoryProduct;
 use App\Models\Product;
 use App\Models\Slide;
 use App\Models\Blog;
+use App\Models\City;
+use App\Models\CategoryBlog;
+use App\Models\Gallery;
 use Session;
 use Cart;
 session_start();
@@ -26,43 +29,49 @@ class IndexController extends Controller
         //--seo
         $slide = Slide::all();
         $category = CategoryProduct::where('category_status','1')->get();
-        $brand = BrandProduct::where('brand_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
         $product = Product::with('category','brand')->where('product_status','1')->take(3)->get();
         $new_product = Product::where('product_status','1')->orderBy('id','DESC')->take(6)->get();
-        return view('pages.home',compact('category','brand','product','new_product','slide','meta_desc','meta_keywords','meta_title','url_canonical','image_og'));
+        return view('pages.home',compact('category','cate_blog','brand','product','new_product','slide','meta_desc','meta_keywords','meta_title','url_canonical','image_og','cate_blog'));
     }
     public function danhmuc($slug)
     {   
         $slide = Slide::all();
         $category = CategoryProduct::where('category_status','1')->get();
         $category_name = CategoryProduct::where('category_status','1')->where('category_slug',$slug)->first();
-        $brand = BrandProduct::where('brand_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
         $product = Product::with('category','brand')->where('product_status','1')->where('category_id',$category_name->id)->paginate(12);
-        return view('pages.category',compact('category','brand','product','category_name','slide'));
+        return view('pages.category',compact('category','brand','product','category_name','slide','cate_blog'));
     }
     public function thuonghieu($slug)
     {
         $slide = Slide::all();
-         $brand = BrandProduct::where('brand_status','1')->get();
-        $brand_name = BrandProduct::where('brand_status','1')->where('brand_slug',$slug)->first();
+         $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        $brand_name = BrandProduct::with('product')->where('brand_status','1')->where('brand_slug',$slug)->first();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
         $category = CategoryProduct::where('category_status','1')->get();
         $product = Product::with('category','brand')->where('product_status','1')->where('brand_id',$brand_name->id)->paginate(12);
-        return view('pages.brand',compact('category','brand','product','brand_name','slide'));
+        return view('pages.brand',compact('category','brand','product','brand_name','slide','cate_blog'));
     }
-    public function tintuc()
-    {
-        $blog = Blog::orderBy('id','DESC')->paginate(4);
+    public function tintuc($slug)
+    {       
+        $cate_name = CategoryBlog::where('cate_blog_slug',$slug)->first();
+        $blog = Blog::where('cate_blog_id',$cate_name->id)->orderBy('id','DESC')->paginate(6);
         $slide = Slide::all();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
          $category = CategoryProduct::where('category_status','1')->get();
-        $brand = BrandProduct::where('brand_status','1')->get();
-        return view('pages.about',compact('category','slide','brand','blog'));
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        return view('pages.about',compact('category','slide','brand','blog','cate_blog','cate_name'));
     }
     public function lienhe()
     {
         $slide = Slide::all();
          $category = CategoryProduct::where('category_status','1')->get();
-        $brand = BrandProduct::where('brand_status','1')->get();
-        return view('pages.contact',compact('category','brand','slide'));
+         $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        return view('pages.contact',compact('category','brand','slide','cate_blog'));
     }
     public function chitietsanpham($slug)
     {
@@ -70,6 +79,7 @@ class IndexController extends Controller
         $meta_desc = "Chuyên bán những phụ kiện ,điện thoại, máy tính"; 
         $meta_keywords = "thiet bi game,phu kien game,game phu kien,game giai tri, dien thoai, may tinh";
         $meta_title = "Phụ kiện, điện thoại, máy tính chính hãng";
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
         $url_canonical = \URL::current();
         $image_og = url('public/img/logos/visa.png');
         $link_icon = url('public/img/logos/visa.png');
@@ -77,10 +87,11 @@ class IndexController extends Controller
 
         $slide = Slide::all();
         $category = CategoryProduct::where('category_status','1')->get();
-        $brand = BrandProduct::where('brand_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
         $product = Product::with('category','brand')->where('product_slug',$slug)->first();
-        $related_product = Product::where('category_id',$product->category_id)->whereNotIn('id',[$product->id])->take(6)->get();
-        return view('pages.detailproduct',compact('category','brand','product','related_product','slide','meta_desc','meta_keywords','meta_title','url_canonical','image_og','link_icon'));
+        $gallery = Gallery::where('product_id',$product->id)->get();
+        $related_product = Product::where('category_id',$product->category_id)->whereNotIn('id',[$product->id])->take(3)->get();
+        return view('pages.detailproduct',compact('cate_blog','category','brand','product','related_product','slide','meta_desc','meta_keywords','meta_title','url_canonical','image_og','link_icon','gallery'));
     }
     
     public function tabs_danhmuc(Request $request){
@@ -133,26 +144,30 @@ class IndexController extends Controller
     {
         $slide = Slide::all();
          $category = CategoryProduct::where('category_status','1')->get();
-        $brand = BrandProduct::where('brand_status','1')->get();
-        return view('pages.checkout',compact('category','brand','slide'));
+         $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        $city = City::orderby('matp','ASC')->get();
+        return view('pages.checkout',compact('category','brand','slide','city','cate_blog'));
     }
     public function view_blog($slug)
-    {   $blog =Blog::where('blog_slug',$slug)->first();
+    {   $blog =Blog::with('categoryblog')->where('blog_slug',$slug)->first();
         $slide = Slide::all();
          $category = CategoryProduct::where('category_status','1')->get();
-        $brand = BrandProduct::where('brand_status','1')->get();
-        return view('pages.blog',compact('category','brand','slide','blog'));
+         $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        return view('pages.blog',compact('category','brand','slide','blog','cate_blog'));
     }
     public function timkiem(Request $request)
     {   $data = $request->all();
         $slide = Slide::all();
         $category = CategoryProduct::where('category_status','1')->get();
-        $brand = BrandProduct::where('brand_status','1')->get();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
          
         $tag = $data['tukhoa'];    
         $product = Product::with('category','brand')->where('product_content','LIKE','%'.$tag.'%')->orWhere('product_desc','LIKE','%'.$tag.'%')->paginate(12);
             
-        return view('pages.timkiem',compact('slide','category','brand','product','tag'));
+        return view('pages.timkiem',compact('slide','category','brand','product','tag','cate_blog'));
         
     }
     public function autocomplete_ajax(Request $request){
@@ -175,5 +190,23 @@ class IndexController extends Controller
          $output .= '</ul>';
          echo $output;
      }
+    }
+    public function tag($tag)
+    {
+        $slide = Slide::all();
+        $category = CategoryProduct::where('category_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
+
+        $tags = explode("-",$tag);
+        $product = Product::with('brand','category')->where(
+            function ($query) use($tags) {
+            for ($i = 0; $i < count($tags); $i++){
+                $query->orwhere('product_tags', 'like',  '%' . $tags[$i] .'%');
+            }
+            })->paginate(12);
+
+        return view('pages.tag')->with(compact('slide','category','brand','cate_blog','tag','product'));
+        
     }
 }

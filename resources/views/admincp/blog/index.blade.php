@@ -32,7 +32,7 @@
 
     <div class="container-fluid py-4">
       <!---------------------------- Nội dung ----------------------->
-        <a href="{{ route('blog.create') }}" class="btn btn-success">Thêm</a>
+        <a href="{{ route('blog.create') }}" class="btn btn-success"><i class="fas fa-plus-circle"></i> Thêm</a>
         <div class="row">
         <div class="col-12">
           <div class="card my-4">
@@ -48,7 +48,8 @@
                     <tr>
                       <th class="text-center">STT</th>
                       <th class="text-center">Bài viết</th>
-                      {{-- <th class="text-center">Mô tả</th> --}}
+                      <th class="text-center">Ảnh</th>
+                      <th class="text-center">Danh mục</th>
                       <th class="text-center">Tác giả</th>
                       <th class="text-center">Slug</th>
                       <th class="text-center"></th>
@@ -67,27 +68,28 @@
                         {{$key}}
                       </td>
                       <td class="text-center">
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="{{ asset('uploads/'.$dulieu->blog_image) }}" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{$dulieu->blog_name}}</h6>
-                          </div>
-                        </div>
+                          @php
+                            $tomtat = substr($dulieu->blog_name,0,50);
+                          @endphp
+                            {{$tomtat."..."}}
+                          
                       </td class="text-center">
-                      {{-- <td class="text-center">
-                        @php
-                          $tomtat = substr($dulieu->blog_desc, 0,40);
-                        @endphp
-                        {{$tomtat.'....'}}
+                      <td class="text-center">
+                        <img src="{{ asset('uploads/'.$dulieu->blog_image) }}" width="100" height="100">
+                      </td>
+                      <td class="text-center">
                         
-                      </td> --}}
+                        {{$dulieu->categoryblog->cate_blog_name}}
+                        
+                      </td>
                       <td class="text-center">
                         {{$dulieu->blog_author}}
                       </td>
                       <td class="text-center">
-                        {{$dulieu->blog_slug}}
+                       @php
+                            $tomtat = substr($dulieu->blog_slug,0,15);
+                          @endphp
+                            {{$tomtat."..."}}
                       </td>
                     
                       <td class="text-center">

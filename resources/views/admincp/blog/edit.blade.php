@@ -74,7 +74,9 @@
                                 <div class="col-md-6 border">
                                     <input type="file" class="form-control" name="blog_image">
                                 </div>
-                                <img src="{{ asset('uploads/'.$blog->blog_image) }}" alt="" height="200">
+                                <div class="col-2">
+                                <img src="{{ asset('uploads/'.$blog->blog_image) }}" alt="" height="100">
+                                </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="blog_author" class="col-md-4 col-form-label text-md-right">Tác giả:</label>
@@ -84,11 +86,27 @@
                             </div>
                             <div class="row mb-3">
                                 <label for="blog_desc" class="col-md-4 col-form-label text-md-right">Mô tả:</label>
-                                <div class="col-md-6 border">
+                                <div class="col-md-12 border">
                                     <textarea id="noidungblog" autocomplete="off" class="form-control" name="blog_desc" rows="3" style="resize: none;">{!!$blog->blog_desc!!}</textarea>
                                 </div>
                             </div>
+                            <div class="row mb-3">
+                                <label for="cate_blog_slug" class="col-md-4 col-form-label text-md-right">Danh mục:</label>
+                                <div class="col-md-6">
+                                    <select class="custom-select" name="cate_blog_slug">
 
+                                      @foreach ($cate_blog as $key => $dulieu)
+                                        <option value="{{$dulieu->id}}"
+                                            @if ($dulieu->id == $blog->cate_blog_id)
+                                               selected 
+                                            @endif>
+                                            {{$dulieu->cate_blog_name}}
+                                        </option>
+                                      @endforeach
+     
+                                    </select>
+                                </div>
+                            </div>
                             <div class="row mb-0">
                                 <div class="col-md-8 offset-md-4">
                                     <button type="submit" class="btn btn-primary">
