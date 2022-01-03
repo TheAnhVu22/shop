@@ -85,7 +85,7 @@
                                                 @endphp
                                                     {{$tomtat."..."}}
                                             </h4>
-                                            <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
+                                            <h3 style="color: orange;">{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
                                             
 
                                          
@@ -133,7 +133,7 @@
                                                 $tomtat = substr($dulieu->product_content,0,50);
                                             @endphp
                                                 {{$tomtat."..."}}</h4>
-                                            <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
+                                            <h3 style="color: orange;">{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
                                             
 
                                          

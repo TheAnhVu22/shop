@@ -16,7 +16,7 @@ class CategoryProductController extends Controller
     }
     public function index()
     {
-        $category = CategoryProduct::orderBy('id','DESC')->get();
+        $category = CategoryProduct::orderBy('position','ASC')->get();
         return view('admincp.category.index',compact('category'));
     }
 
@@ -125,5 +125,14 @@ class CategoryProductController extends Controller
     {
         CategoryProduct::find($id)->delete();
         return redirect()->back()->with('status','Xóa thành công');
+    }
+    public function resorting(Request $request)
+    {
+        $data = $request->all();
+        foreach($data['array_id'] as $key => $value){
+            $CategoryProduct = CategoryProduct::find($value);
+            $CategoryProduct->position = $key;
+            $CategoryProduct->save();
+        }
     }
 }

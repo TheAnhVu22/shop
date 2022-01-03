@@ -59,6 +59,9 @@
     <link rel="apple-touch-icon-precomposed" href="{{ asset('images/ico/apple-touch-icon-57-precomposed.png') }}">
 
         <link rel="stylesheet" type="text/css" href="{{ asset('css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/owl.theme.default.min.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
 </head>
 <body>
     <header id="header"><!--header-->
@@ -120,7 +123,7 @@
                         <div class="shop-menu pull-right">
                             <ul class="nav navbar-nav">
                                 <li><a href="{{ route('login_checkout') }}"><i class="fa fa-user"></i> Tài khoản</a></li>
-                                <li><a href="#"><i class="fa fa-heart"></i> Yêu thích</a></li>
+                                <li><a href="{{ route('yeuthich') }}"><i class="fa fa-heart"></i> Yêu thích</a></li>
                                 <li><a href="{{ route('gio_hang') }}"><i class="fa fa-shopping-cart"></i> Giỏ hàng</a></li>
                                 @php
                                     $customer_id = Session()->get('customer_id');
@@ -307,13 +310,7 @@
                             </div>
                         </div><!--/brands_products-->
                         
-                        <div class="price-range"><!--price-range-->
-                            <h2>Lọc giá <i class="fas fa-search-dollar"></i></h2>
-                            <div class="well text-center">
-                                 <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" ><br />
-                                 <b class="pull-left">0 vnđ</b> <b class="pull-right">50000000 vnđ</b>
-                            </div>
-                        </div><!--/price-range-->
+                        
                         
                         <div class="shipping text-center"><!--shipping-->
                             <img src="{{ asset('images/home/shipping.jpg') }}" alt="" />
@@ -728,22 +725,21 @@
 
 <script type="text/javascript" src="{{ asset('js/owl.carousel.js') }}"></script>
     <script type="text/javascript">
-        $('.owl-carousel').owlCarousel({
-    loop:true,
-    margin:10,
-    nav:true,
-    responsive:{
-        0:{
-            items:1
-        },
-        600:{
-            items:2
-        },
-        1000:{
-            items:3
-        }
-    }
-})
+       var owl = $('.owl-carousel');
+        owl.owlCarousel({
+            items:3,
+            loop:true,
+            margin:10,
+            autoplay:true,
+            autoplayTimeout:3000,
+            autoplayHoverPause:true
+        });
+        $('.play').on('click',function(){
+            owl.trigger('play.owl.autoplay',[1000])
+        })
+        $('.stop').on('click',function(){
+            owl.trigger('stop.owl.autoplay')
+        })
     </script>
 
     {{-- script cho gallery ảnh trong chi tiết sản phẩm --}}
@@ -864,5 +860,147 @@
         });
     </script>
 
+    {{-- ----- Lưu sản phẩm yêu thích ---- --}}
+    <script type="text/javascript">
+      show_wishlist();
+      function show_wishlist(){
+          if(localStorage.getItem('wishlist_sp')!=null){
+            // chuyển chuỗi json thành đối tượng js JSON.parse
+             var data = JSON.parse(localStorage.getItem('wishlist_sp'));
+             // đảo ngược mảng: thêm cuối sẽ hiển thị đầu tiên
+             data.reverse();
+
+             for(i=0;i<data.length;i++){
+
+                var title = data[i].title.substring(0, 20);
+                var img = data[i].img;
+                var id = data[i].id;
+                var url = data[i].url;
+                var price = new Intl.NumberFormat('de-DE').format(data[i].price);
+                
+                $('#yeuthich').append(` 
+                  <div class="col-sm-4">
+                        <div class="product-image-wrapper">                       
+                            <div class="single-products">
+                                 <div class="productinfo text-center">                              
+                                    <a href="`+url+`">
+                                        <img src="`+img+`" alt="" />
+                                        <h4>`+title+`</h4>
+                                        <h3>`+price+` vnđ</h3>                                    
+                                     </a>                               <button data-idsp="`+id+`" class="btn btn-primary btn_xoa_sp mt-2"><i class="fa fa-heart" aria-hidden="true"></i> Xóa yêu thích</button>  
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                 `);
+            }
+
+          }
+      }
+      $('.btn_thich').click(function(){
+        $('.fa.fa-heart').css('color','black');
+        const id = $('.wishlist_id').val();       
+        const title = $('.wishlist_title').val();
+        const img = $('.card-img-top').val();
+        const url = $('.wishlist_url').val();
+        const price = $('.wishlist_price').val();
+    
+        const item = {
+          'id': id,
+          'title': title,
+          'img': img,
+          'url': url,
+          'price':price
+          
+        }
+        if(localStorage.getItem('wishlist_sp')==null){
+           localStorage.setItem('wishlist_sp', '[]');
+        }
+        var old_data = JSON.parse(localStorage.getItem('wishlist_sp'));
+        
+        // tìm kiếm phần tử có id trong wishlist
+        var matches = $.grep(old_data, function(obj){
+            return obj.id == id;
+        })
+        // nếu có phần tử trùng
+        if(matches.length){
+            alert('Sản phẩm đã có trong danh sách yêu thích');
+        }else{
+            if(old_data.length<=6){
+              old_data.push(item);
+            }else{
+              alert('Chỉ lưu tối đa 6 sản phẩm');
+            }
+             // chuyển từ đối tượng js sang json: JSON.stringify
+            localStorage.setItem('wishlist_sp', JSON.stringify(old_data));
+            alert('Đã lưu vào danh sách yêu thích.');
+            
+        }
+         localStorage.setItem('wishlist_sp', JSON.stringify(old_data));
+ 
+      }
+      );
+   
+    </script>
+    <script type="text/javascript">
+       $('.btn_xoa_sp').click(function(){
+       $('.fa.fa-heart').css('color','#fac');
+        const id_xoa = $(this).data('idsp');
+         delete_wishlist();
+      function delete_wishlist(){
+          if(localStorage.getItem('wishlist_sp')!=null){
+            // chuyển chuỗi json thành đối tượng js JSON.parse
+             var data = JSON.parse(localStorage.getItem('wishlist_sp'));
+            
+             for(i=0;i<data.length;i++){                
+                var id = data[i].id;
+                if(id==id_xoa){
+                  data.splice(i,1);
+                  localStorage.setItem('wishlist_sp', JSON.stringify(data));
+                  $('#yeuthich').empty();
+                }
+             }
+          }
+       }
+       
+       show_wishlist();
+      });
+    </script>
+     {{-- ----- end Lưu sản phẩm yêu thích ---- --}}
+
+     <script type="text/javascript">
+         $(document).ready(function() {
+            $('#sort').on('change',function() {
+                var url = $(this).val();
+                // alert(url);
+                if(url){
+                    window.location = url;
+                }
+                return false;
+            });
+         });
+     </script>
+
+    {{--  Lọc giá  --}}
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+     <script>
+  $(document).ready(function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 100000000,
+
+      values: [ 0, 100000000 ],
+      step:100000,
+      slide: function( event, ui ) {
+        $( "#amount" ).val( new Intl.NumberFormat('de-DE').format(ui.values[ 0 ]) + " vnđ - " + new Intl.NumberFormat('de-DE').format(ui.values[ 1 ]) +"vnđ" );
+        $( "#start_price" ).val( ui.values[ 0 ]);
+        $( "#end_price" ).val( ui.values[ 1 ]);
+      }
+        });
+        $( "#amount" ).val($( "#slider-range" ).slider( "values", 0 ) +
+          " - " + $( "#slider-range" ).slider( "values", 1 ) );
+  });
+  </script>
 </body>
 </html>

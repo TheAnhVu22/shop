@@ -45,19 +45,21 @@
                                         </a>                                       
                                     </div>
                                {{--  Phần trượt --}}
+                               <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
                                     <div class="product-overlay">
                                         <div class="overlay-content">
-                                            <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
+                                            
                                                 <p>@php
-                                                  $tomtat = substr($dulieu->product_content, 0,100);
+                                                  $tomtat = substr($dulieu->product_desc, 0,100);
                                                     @endphp                                                       
-                                                {{$tomtat."..."}} 
+                                                {!!$tomtat."..."!!} 
                                                 </p>
                                                <h4 style="color:white;">{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h4>
                                                  
-                                            </a>
+                                           
                                         </div>
                                     </div>
+                                     </a>
                                 </div>
                                 <div class="choose productinfo text-center">
                                     
@@ -80,7 +82,7 @@
                    
                     @endforeach
                     @endif    
-                        {{$product->onEachSide(1)->links('pagination::bootstrap-4')}}
+                       
                     </div><!--features_items-->
                   
                     

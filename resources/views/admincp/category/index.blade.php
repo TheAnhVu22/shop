@@ -54,9 +54,9 @@
                       <th class="text-center"></th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody class="XapxepJqueryui">
                      @foreach ($category as $key => $dulieu)
-                    <tr>
+                    <tr id="{{$dulieu->id}}">
                       {{-- <td>
                         <div class="d-flex px-2 py-1">
                           <div>
@@ -106,6 +106,9 @@
 
                   </tbody>
                 </table>
+
+                <div class="thongbao" style="color:green;"></div>
+
                 <!-----import data---->
               <form action="{{url('import-category')}}" method="POST" enctype="multipart/form-data">
                   @csrf

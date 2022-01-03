@@ -7,6 +7,41 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="amount">Xắp xếp theo</label>
+
+                            <form>
+                                @csrf
+
+                               {{--  Request::url() lấy đường dẫn trang hiện tại --}}
+                                <select class="custom-select text-center" id="sort" name="sort">
+                                  <option value="{{Request::url()}}?sort_by=none">Lọc</option>
+                                  <option value="{{Request::url()}}?sort_by=tang_dan">Giá tăng dần</option>
+                                  <option value="{{Request::url()}}?sort_by=giam_dan">Giá giảm dần</option>
+                                  <option value="{{Request::url()}}?sort_by=kytu_az">Tên từ A đến Z</option>
+                                  <option value="{{Request::url()}}?sort_by=kytu_za">Tên từ Z đến A</option>
+                                  
+                                </select>
+                            </form>
+                        </div>
+                         <div class="col-sm-5">
+                        <form action="">
+                        <p>
+                          <label for="amount">Lọc giá:</label>
+                          <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold; width: 100%;">
+                          <input type="hidden" id="end_price" name="end_price">
+                          <input type="hidden" id="start_price" name="start_price">
+
+                        </p>
+                         
+                        <div id="slider-range"></div>
+                        <br>
+                        <input type="submit" name="filter_price" value="Lọc giá" class="btn btn-info">
+                          </form>
+                        </div>
+                    </div>
+                    <br>
                     @foreach ($product as $key => $dulieu)
                         
                         <div class="col-sm-4">
@@ -20,24 +55,26 @@
                                                 $tomtat= substr($dulieu->product_content,0,22);
                                             @endphp
                                             {{$tomtat."..."}}</h4>
-                                            <h3>{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
+                                            <h3 style="color:orange">{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h3>
                                             
                                         </a>                                       
                                     </div>
                                {{--  Phần trượt --}}
+                               <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
                                     <div class="product-overlay">
                                         <div class="overlay-content">
-                                            <a href="{{ route('chi_tiet_san_pham',$dulieu->product_slug) }}">
+                                            
                                                 <p>@php
-                                                  $tomtat = substr($dulieu->product_content, 0,100);
+                                                  $tomtat = substr($dulieu->product_desc, 0,200);
                                                     @endphp                                                       
-                                                {{$tomtat."..."}} 
+                                                {!!$tomtat."..."!!} 
                                                 </p>
                                                <h4 style="color:white;">{{number_format($dulieu->product_price,0,',','.').' '.'VNĐ'}}</h4>
                                                  
-                                            </a>
+                                            
                                         </div>
                                     </div>
+                                </a>    
                                 </div>
                                 <div class="choose productinfo text-center">
                                     

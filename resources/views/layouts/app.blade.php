@@ -838,5 +838,34 @@ $(document).ready( function () {
     
     }); 
   </script>
+
+{{-- Xắp xếp danh mục kéo thả --}}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script type="text/javascript">
+  
+    $('.XapxepJqueryui').sortable({
+        // ui-state-highlight ở trong jqueryui
+        placeholder : 'ui-state-highlight',
+        update: function(event,ui){
+            var array_id=[];
+            $('.XapxepJqueryui tr').each(function(){
+            array_id.push($(this).attr('id'));
+        })
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url:"{{ route('resorting') }}",
+                method:"POST",
+                data:{array_id:array_id},
+                success:function(data){
+                    $('.thongbao').html('Xắp xếp thành công');
+                }
+            })
+        }
+        
+    })
+
+  </script>
 </body>
 </html>

@@ -32,7 +32,7 @@ class IndexController extends Controller
         $category = CategoryProduct::where('category_status','1')->get();
         $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
         $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
-        $product = Product::with('category','brand')->where('product_status','1')->take(3)->get();
+        $product = Product::with('category','brand')->where('product_status','1')->take(6)->get();
         $new_product = Product::where('product_status','1')->orderBy('id','DESC')->take(6)->get();
         return view('pages.home',compact('category','cate_blog','brand','product','new_product','slide','meta_desc','meta_keywords','meta_title','url_canonical','image_og','cate_blog'));
     }
@@ -43,7 +43,34 @@ class IndexController extends Controller
         $category_name = CategoryProduct::where('category_status','1')->where('category_slug',$slug)->first();
         $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
         $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
-        $product = Product::with('category','brand')->where('product_status','1')->where('category_id',$category_name->id)->paginate(12);
+        if(isset($_GET['sort_by'])){
+            $sort_by = $_GET['sort_by'];
+
+            // ->appends(request()->query()) phân trang vẫn giữ được url, hay kiểu xắp xếp
+
+            if($sort_by=='tang_dan'){
+                $product = Product::with('category','brand')->where('product_status','1')->where('category_id',$category_name->id)->orderBy('product_price','ASC')->paginate(12)->appends(request()->query());
+            }elseif ($sort_by=='giam_dan') {
+                $product = Product::with('category','brand')->where('product_status','1')->where('category_id',$category_name->id)->orderBy('product_price','DESC')->paginate(12)->appends(request()->query());
+
+            }
+            elseif ($sort_by=='kytu_az') {
+                $product = Product::with('category','brand')->where('product_status','1')->where('category_id',$category_name->id)->orderBy('product_content','ASC')->paginate(12)->appends(request()->query());
+
+            }elseif($sort_by=='kytu_za'){
+                $product = Product::with('category','brand')->where('product_status','1')->where('category_id',$category_name->id)->orderBy('product_content','DESC')->paginate(12)->appends(request()->query());
+
+            }
+        }
+        elseif(isset($_GET['start_price']) && isset($_GET['end_price'])){
+            $min=$_GET['start_price'];
+            $max=$_GET['end_price'];
+            $product = Product::with('category','brand')->whereBetween('product_price',[$min,$max])->where('product_status','1')->where('category_id',$category_name->id)->paginate(12);
+        }
+        else{
+            $product = Product::with('category','brand')->where('product_status','1')->where('category_id',$category_name->id)->paginate(12);
+        }
+        
         return view('pages.category',compact('category','brand','product','category_name','slide','cate_blog'));
     }
     public function thuonghieu($slug)
@@ -53,7 +80,33 @@ class IndexController extends Controller
         $brand_name = BrandProduct::with('product')->where('brand_status','1')->where('brand_slug',$slug)->first();
         $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
         $category = CategoryProduct::where('category_status','1')->get();
+        if(isset($_GET['sort_by'])){
+            $sort_by = $_GET['sort_by'];
+
+            // ->appends(request()->query()) phân trang vẫn giữ được url, hay kiểu xắp xếp
+
+            if($sort_by=='tang_dan'){
+                $product = Product::with('category','brand')->where('product_status','1')->where('brand_id',$brand_name->id)->orderBy('product_price','ASC')->paginate(12)->appends(request()->query());
+            }elseif ($sort_by=='giam_dan') {
+                $product = Product::with('category','brand')->where('product_status','1')->where('brand_id',$brand_name->id)->orderBy('product_price','DESC')->paginate(12)->appends(request()->query());
+
+            }
+            elseif ($sort_by=='kytu_az') {
+                $product = Product::with('category','brand')->where('product_status','1')->where('brand_id',$brand_name->id)->orderBy('product_content','ASC')->paginate(12)->appends(request()->query());
+
+            }elseif($sort_by=='kytu_za'){
+                $product = Product::with('category','brand')->where('product_status','1')->where('brand_id',$brand_name->id)->orderBy('product_content','DESC')->paginate(12)->appends(request()->query());
+
+            }
+        }
+        elseif(isset($_GET['start_price']) && isset($_GET['end_price'])){
+            $min=$_GET['start_price'];
+            $max=$_GET['end_price'];
+            $product = Product::with('category','brand')->whereBetween('product_price',[$min,$max])->where('product_status','1')->where('brand_id',$brand_name->id)->paginate(12);
+        }
+        else{
         $product = Product::with('category','brand')->where('product_status','1')->where('brand_id',$brand_name->id)->paginate(12);
+        }   
         return view('pages.brand',compact('category','brand','product','brand_name','slide','cate_blog'));
     }
     public function tintuc($slug)
@@ -91,7 +144,7 @@ class IndexController extends Controller
         $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
         $product = Product::with('category','brand')->where('product_slug',$slug)->first();
         $gallery = Gallery::where('product_id',$product->id)->get();
-        $related_product = Product::where('category_id',$product->category_id)->whereNotIn('id',[$product->id])->take(3)->get();
+        $related_product = Product::where('category_id',$product->category_id)->whereNotIn('id',[$product->id])->get();
         $rating = Rating::where('product_id',$product->id)->avg('rating');
         $rating1=round($rating,1);
         $rating=round($rating);
@@ -119,7 +172,7 @@ class IndexController extends Controller
                         <div class="productinfo text-center">
                         <a href="'.$url.'">
                             <img src="'.$anh1.'" alt="" />
-                            <h2>'.$gia.'</h2>
+                            <h2 style="color:orange;">'.$gia.' VNĐ</h2>
                             <p>'.$ten.'</p>
                         </a>
                             
@@ -213,5 +266,13 @@ class IndexController extends Controller
 
         return view('pages.tag')->with(compact('slide','category','brand','cate_blog','tag','product'));
         
+    }
+    public function yeuthich($value='')
+    {
+        $slide = Slide::all();
+        $category = CategoryProduct::where('category_status','1')->get();
+        $brand = BrandProduct::with('product')->where('brand_status','1')->take(10)->get();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
+        return view('pages.danhsachyeuthich')->with(compact('slide','category','brand','cate_blog'));
     }
 }

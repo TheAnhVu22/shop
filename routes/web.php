@@ -181,4 +181,11 @@ Route::get('/binh_luan',[ProductController::class,'binh_luan']);
 Route::post('/xoa_binhluan',[ProductController::class,'xoa_binhluan'])->name('xoa_binhluan');
 Route::post('/traloi_binhluan',[ProductController::class,'traloi_binhluan'])->name('traloi_binhluan');
 
+// đánh giá sao
 Route::post('/insert_rating',[ProductController::class,'insert_rating'])->name('insert_rating');
+
+//xắp xếp danh mục kéo thả bằng ajax
+Route::post('resorting', [CategoryProductController::class,'resorting'])->name('resorting');
+
+//sản phẩm yêu thích
+Route::get('/yeuthich', [IndexController::class, 'yeuthich'])->name('yeuthich');
