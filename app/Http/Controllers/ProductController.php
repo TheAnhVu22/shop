@@ -8,7 +8,7 @@ use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\Rating;
-
+use Brian2694\Toastr\Facades\Toastr;
 class ProductController extends Controller
 {
     public function __construct()
@@ -46,6 +46,9 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+            // $request->product_price = filter_var($request->product_price,FILTER_SANITIZE_NUMBER_INT);
+            // $request->product_quantity = filter_var($request->product_quantity,FILTER_SANITIZE_NUMBER_INT);
+            
          $data = $request->validate(
             [
                 'product_content' => 'required|unique:products|max:255',
@@ -71,6 +74,7 @@ class ProductController extends Controller
                 'product_content.unique' => 'Tên danh mục đã tồn tại',
                 'product_content.max' => 'Tối đa 255 ký tự',
             ]);
+
         $product = new Product();
         $product->product_content = $data['product_content'];
         $product->product_desc = $data['product_desc'];
@@ -91,6 +95,7 @@ class ProductController extends Controller
 
         $product->product_image=$new_image;
         $product->save();
+        Toastr::success('Thêm sản phẩm thành công','Thành công');
         return redirect()->back()->with('status','Thêm thành công');
     }
 
@@ -178,6 +183,7 @@ class ProductController extends Controller
         $product->product_image=$new_image;
         }
         $product->save();
+        Toastr::success('Cập nhật sản phẩm thành công','Thành công');
         return redirect(route('product.index'))->with('status','Cập nhật thành công');
     }
 
@@ -272,5 +278,35 @@ class ProductController extends Controller
         $rating->rating=$data['index'];
         $rating->save();
         return 'ok';
+    }
+    public function file_browser(Request $request)
+    {
+        $paths = glob(public_path('public/uploads/ckeditor/*'));
+        $fileNames = array();
+        foreach ($paths as $path) {
+            array_push($fileNames, basename($path));
+        }
+        $data = array(
+            'fileNames' => $fileNames
+        );
+        return view('admincp.image.file_browser')->with($data);
+    }
+    public function uploads_ckeditor(Request $request)
+    {
+        if($request->hasFile('upload')){
+            $originName = $request->file('upload')->getClientOriginalName();
+            $fileName = pathinfo($originName,PATHINFO_FILENAME);
+            $extension = $request->file('upload')->getClientOriginalExtension();
+            $fileName = $fileName.'_'.time().'.'.$extension;
+
+            $request->file('upload')->move('public/uploads/ckeditor',$fileName);
+
+            $CKEditorFuncNum = $request->input('CKEditorFuncNum');
+            $url = asset('public/uploads/ckeditor/'.$fileName);
+            $msg ="Tải ảnh thành công";
+            $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
+            @header('Content-Type: text/html; charset=utf-8');
+            echo $response;
+        }
     }
 }

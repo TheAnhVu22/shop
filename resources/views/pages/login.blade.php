@@ -25,8 +25,7 @@
                             <input type="email" name="login_email" placeholder="Email Address" value="{{old('login_email')}}">
                             <input autocomplete="off" type="password" name="login_password" placeholder="Password" value="{{old('login_password')}}">
                             <span>
-                                <input type="checkbox" name="luumatkhau" class="checkbox"> 
-                                Lưu mật khẩu
+                                <a href="{{ url('/quen_mk') }}">Quên mật khẩu ?</a>
                             </span>
                             <button type="submit" class="btn btn-success" style="background-color:#29C31F">Đăng nhập</button>
                         </form>

@@ -18,6 +18,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryBlogController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\StatisticalController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\PayPalController;
+use App\Http\Controllers\IconController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,6 +33,18 @@ use App\Http\Controllers\VideoController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('lang/{lan}', function($lan){
+	if(in_array($lan, ['vi','en'])){
+		Session::put('lan', $lan);
+		return redirect()->back();
+	}
+});
+
+Route::get('create-transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
+Route::get('process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
+Route::get('success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
+Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
+
 // trang chủ shop
 Route::get('/', [IndexController::class , 'index'])->name('homepage');
 
@@ -72,7 +89,11 @@ Route::post('/login_customer', [CheckoutController::class,'login_customer'])->na
 Route::get('/checkout', [IndexController::class,'checkout'])->name('checkout');
 // đăng xuất
 Route::get('/logout_checkout',[CheckoutController::class, 'logout_checkout'])->name('logout_checkout');
-
+//quên mật khẩu
+Route::get('/quen_mk',[CheckoutController::class, 'quen_mk']);
+Route::post('/lay_mk',[CheckoutController::class, 'lay_mk']);
+Route::get('/update_pass',[CheckoutController::class, 'update_pass']);
+Route::post('/update_new_pass',[CheckoutController::class, 'update_new_pass']);
 // lưu địa chỉ giao hàng
 Route::post('/save_checkout_customer', [CheckoutController::class,'save_checkout_customer'])->name('save_checkout_customer');
 // chọn hình thức thanh toán
@@ -94,6 +115,8 @@ Route::group(['middleware' => ['auth','role:Manager|admin']], function() {
 });  
 //send mail
 Route::get('/send_mail', [HomeController::class,'send_mail'])->name('send_mail');
+Route::get('/send_coupon/{id}', [HomeController::class,'send_coupon'])->name('send_coupon');
+Route::get('/mail_example', [HomeController::class,'mail_example'])->name('mail_example');
 
 //face client login
 Route::get('/login_checkout/facebook', [CheckoutController::class,'redirectToFacebook'])->name('login_checkout.facebook');
@@ -133,7 +156,7 @@ Route::get('/tag/{tag}', [IndexController::class, 'tag']);
 
 // mã giảm giá 
 Route::post('/check-coupon',[CheckoutController::class,'check_coupon']);
-Route::get('/unset_coupon',[CheckoutController::class,'unset_coupon']);
+Route::get('/unset-coupon',[CheckoutController::class,'unset_coupon']);
 
 // quản lý phí Vận chuyển admin 
 Route::get('/delivery',[DeliveryController::class,'delivery'])->name('delivery');
@@ -189,3 +212,59 @@ Route::post('resorting', [CategoryProductController::class,'resorting'])->name('
 
 //sản phẩm yêu thích
 Route::get('/yeuthich', [IndexController::class, 'yeuthich'])->name('yeuthich');
+
+//Thống kê
+Route::post('/filter-by-date', [StatisticalController::class, 'filter_by_date']);
+Route::post('/days-order', [StatisticalController::class, 'days_order']);
+Route::post('/dashboard-filter', [StatisticalController::class, 'dashboard_filter']);
+
+//Document gg drive
+Route::get('upload_file', [DocumentController::class, 'upload_file'])->name('upload_file');
+Route::get('upload_image', [DocumentController::class, 'upload_image'])->name('upload_image');
+Route::get('upload_video', [DocumentController::class, 'upload_video'])->name('upload_video');
+
+Route::get('download_document/{path}/{name}', [DocumentController::class, 'download_document'])->name('download_document');
+Route::get('create_document', [DocumentController::class, 'create_document'])->name('create_document');
+Route::get('list_document', [DocumentController::class, 'list_document'])->name('list_document');
+Route::get('read_document', [DocumentController::class, 'read_document'])->name('read_document');
+Route::get('delete_document/{path}', [DocumentController::class, 'delete_document'])->name('delete_document');
+
+//Folder
+Route::get('create_folder', [DocumentController::class, 'create_folder'])->name('create_folder');
+Route::get('rename_folder', [DocumentController::class, 'rename_folder'])->name('rename_folder');
+Route::get('delete_folder', [DocumentController::class, 'delete_folder'])->name('delete_folder');
+Route::get('read_data', [DocumentController::class, 'read_data'])->name('read_data');
+
+//lịch sử đơn hàng
+Route::get('taikhoan', [IndexController::class, 'taikhoan'])->name('taikhoan');
+Route::get('history_detail/{code}', [IndexController::class, 'history_detail'])->name('history_detail');
+
+Route::get('/generate-qrcode', [QrCodeController::class, 'index']);
+
+//Nhà tài trợ
+Route::get('/nhataitro', [VideoController::class, 'nhataitro']);
+Route::post('/select_ntt', [VideoController::class, 'select_ntt'])->name('select_ntt');
+Route::post('/add_ntt', [VideoController::class, 'add_ntt'])->name('add_ntt');
+Route::post('/delete_ntt', [VideoController::class, 'delete_ntt'])->name('delete_ntt');
+Route::post('/edit_ntt', [VideoController::class, 'edit_ntt'])->name('edit_ntt');
+Route::post('/update_ntt', [VideoController::class, 'update_ntt'])->name('update_ntt');
+
+Route::get('/icon', [IconController::class, 'icon']);
+Route::post('/select_icon', [IconController::class, 'select_icon']);
+Route::post('/add_icon', [IconController::class, 'add_icon']);
+Route::post('/delete_icon', [IconController::class, 'delete_icon']);
+Route::post('/edit_icon', [IconController::class, 'edit_icon']);
+Route::post('/edit_img', [IconController::class, 'edit_img']);
+
+Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
+});
+
+Route::get('/file-browser', [ProductController::class, 'file_browser']);
+Route::post('/uploads-ckeditor', [ProductController::class, 'uploads_ckeditor']);
+
+Route::get('/count_cart', [IndexController::class, 'count_cart']);
+Route::get('/giohang_hover', [IndexController::class, 'giohang_hover']);
+Route::get('/load_more', [IndexController::class, 'load_more']);
+Route::get('/show_quick_cart', [IndexController::class, 'show_quick_cart']);
+Route::post('/delete_quick_cart', [IndexController::class, 'delete_quick_cart']);

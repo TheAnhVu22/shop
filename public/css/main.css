@@ -196,9 +196,7 @@ a#scrollUp i{
   padding-right: 15px;
 }
 
-.shop-menu ul li:last-child {
-  padding-right: 0;
-}
+
 
 
 .shop-menu ul li a {
@@ -853,8 +851,13 @@ h2.title {
 .product-image-wrapper{
   border:1px solid #F7F7F5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
-  overflow: hidden;
-  margin-bottom:30px;
+  float: left;
+    clear: right;
+    padding: 10px;
+    position: relative;
+    height: 460px;
+    overflow: hidden;
+
 }
 
 .single-products {

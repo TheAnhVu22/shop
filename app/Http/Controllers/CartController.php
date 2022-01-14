@@ -11,6 +11,7 @@ use App\Models\Slide;
 use App\Models\Blog;
 use Session;
 use Cart;
+
 session_start();
 class CartController extends Controller
 {

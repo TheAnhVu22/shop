@@ -26,6 +26,7 @@ class CreateProductsTable extends Migration
             $table->text('product_tags');
             $table->integer('product_sold');
             $table->integer('product_quantity');
+            $table->integer('product_views');
             $table->timestamps();
         });
     }

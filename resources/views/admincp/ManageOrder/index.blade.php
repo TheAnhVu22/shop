@@ -63,7 +63,10 @@
                       </td>
 
                       <td class="text-center">
-                        {{$dulieu->customer->customer_name}}
+                        @if (isset($dulieu->customer->customer_name))
+                          {{$dulieu->customer->customer_name}}
+                        @endif
+                        
                       </td class="text-center">
 
                       <td class="text-center">

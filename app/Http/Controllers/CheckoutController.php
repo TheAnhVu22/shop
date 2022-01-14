@@ -20,12 +20,16 @@ use App\Models\Province;
 use App\Models\Wards;
 use App\Models\Delivery;
 use App\Models\CategoryBlog;
+use App\Models\Statistical;
 use Session;
 use Cart;
 use Hash;
 use PDF;
+use Mail;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-
+use Brian2694\Toastr\Facades\Toastr;
 
 session_start();
 class CheckoutController extends Controller
@@ -37,12 +41,91 @@ class CheckoutController extends Controller
         $category = CategoryProduct::where('category_status','1')->get();
         $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
         $brand = BrandProduct::where('brand_status','1')->take(10)->get();
+
         return view('pages.login',compact('category','brand','slide','cate_blog'));
+    }
+    // Xử lý đăng nhập của khách hàng
+    public function login_customer(Request $request)
+    {
+        $data = $request->all();
+        $email = $data['login_email'];
+        $mk =$data['login_password'];
+
+        $customer = Customer::where('customer_email',$email)->first();
+        if($customer!=NULL && password_verify($mk,$customer->customer_password)){
+             Session()->put('customer_id', $customer->id);
+             Session::forget('coupon');
+             Toastr::success('Đăng nhập thành công','Thành công');
+            return redirect()->route('homepage');
+        }
+        else{
+            Toastr::error('Đăng nhập thất bại','Thất bại');
+            return Redirect::to('/login_checkout')->with('status','tài khoản mật khẩu không đúng');
+        }
     }
 // Xử lý đăng xuất
     public function logout_checkout(){
         Session::forget('customer_id');
+        Session::forget('coupon');
+        Toastr::success('Đăng xuất thành công','Thành công');
         return Redirect::to('/login_checkout');
+    }
+//quên mật khẩu
+    public function quen_mk()
+    {
+        $slide = Slide::all();
+        $category = CategoryProduct::where('category_status','1')->get();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
+        $brand = BrandProduct::where('brand_status','1')->take(10)->get();
+        return view('pages.forget_pass',compact('category','brand','slide','cate_blog'));
+    }
+//xử lý gửi mail lấy lại mật khẩu
+    public function lay_mk(Request $request)
+    {
+        $data1 = $request->all();
+        $customer = Customer::where('customer_email',$data1['login_email'])->first(); 
+        if($customer){       
+        $title_email = "Lấy lại mật khẩu tài khoản của ATVshop";
+        $data=$customer->customer_email;
+        $token = Str::random();
+        $link_reset_pass = url('/update_pass?email='.$data.'&token='.$token);
+        $customer->customer_token = $token;
+        $customer->save();
+        $ma= array(
+            'mail' =>$customer->customer_email,
+            'link' =>$link_reset_pass,      
+        );
+        Mail::send('pages.sendmail',['ma'=>$ma],function($message) use ($title_email,$data){
+
+                    $message->to($data)->subject($title_email);//send this mail with subject
+                    $message->from($data,$title_email);//send from this mail
+                });
+        return redirect()->back()->with('status',"Quý khách kiểm tra email để xem mật khẩu");
+    }else{
+        return redirect()->back()->with('status',"Tài khoản email không đúng");
+    }
+    }
+
+    public function update_pass()
+    {
+        $slide = Slide::all();
+        $category = CategoryProduct::where('category_status','1')->get();
+        $cate_blog = CategoryBlog::with('blog')->where('cate_blog_status','1')->get();
+        $brand = BrandProduct::where('brand_status','1')->take(10)->get();
+        return view('pages.update_pass',compact('category','brand','slide','cate_blog'));
+    }
+    public function update_new_pass(Request $request)
+    {
+        $data = $request->all();
+        $customer = Customer::where('customer_email',$data['email'])->where('customer_token',$data['token'])->first();
+        if($customer){
+            $customer->customer_password = Hash::make($data['password']);
+            $customer->save();
+            return redirect('quen_mk')->with('status','thay đổi mật khẩu thành công');
+        }
+        else{
+            return redirect('quen_mk')->with('status','vui lòng nhập lại email vì link đã quá hạn');
+        }
     }
   // Lưu địa chỉ giao hàng
     public function save_checkout_customer(Request $request)
@@ -70,7 +153,7 @@ class CheckoutController extends Controller
         Session()->put('shipping_id', $shipping->id);
         return redirect(route('payment'));
     }
-  // Trang chọn hình thức thanh toán  
+  // Trang chọn hình thức thanh toán  bumbuman
     public function payment()
     {
         $slide = Slide::all();
@@ -79,24 +162,9 @@ class CheckoutController extends Controller
         $brand = BrandProduct::where('brand_status','1')->take(10)->get();
         return view('pages.payment',compact('category','brand','slide','cate_blog'));
     }
- // Xử lý đăng nhập của khách hàng
-    public function login_customer(Request $request)
-    {
-        $data = $request->all();
-        $email = $data['login_email'];
-        $mk =$data['login_password'];
+ 
 
-        $customer = Customer::where('customer_email',$email)->first();
-        if($customer!=NULL && password_verify($mk,$customer->customer_password)){
-             Session()->put('customer_id', $customer->id);
-            return redirect()->route('homepage');
-        }
-        else{
-            return Redirect::to('/login_checkout')->with('status','tài khoản mật khẩu không đúng');
-        }
-    }
-
- //Xử lý lưu thông tin đơn đặt hàng vào DB
+ //Xử lý lưu thông tin đơn đặt hàng vào DB 
     public function order_place(Request $request)
     {
         // insert payment
@@ -151,6 +219,7 @@ class CheckoutController extends Controller
         Session::forget('coupon');
         return view('pages.order_success',compact('category','brand','slide'));
     }
+
     public function manage_order()
     {
         $order = Order::with('customer','shipping','orderdetail')->get();
@@ -238,6 +307,7 @@ class CheckoutController extends Controller
    public function add_cart_ajax(Request $request){
         // Session::forget('cart');
         $data = $request->all();
+        
         $session_id = substr(md5(microtime()),rand(0,26),5);
         $cart = Session::get('cart');
         if($cart==true){
@@ -272,7 +342,10 @@ class CheckoutController extends Controller
             );
             Session::put('cart',$cart);
         }      
+
         Session::save();
+
+
     }
     public function delete_product($session_id){
         $cart = Session::get('cart');
@@ -335,8 +408,27 @@ class CheckoutController extends Controller
 
     public function check_coupon(Request $request)
     {
+        $now= Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
         $data = $request->all();
-        $coupon = Coupon::where('coupon_code',$data['coupon'])->first();
+        
+        $coupon = Coupon::where('coupon_code',$data['coupon'])->where('coupon_date_end','>=',$now)->first();
+     
+          // explode: chia chuỗi theo dấu phẩy, hoặc thay bằng dấu khác
+        $coupon_check = 0;
+        if(isset($coupon->coupon_used)){
+        $tukhoa = explode(",", $coupon->coupon_used);      
+          foreach ($tukhoa as $key => $tu){
+
+                if($tu == Session::get('customer_id')){
+                     $coupon_check = 1;
+                     break;
+                }
+            }
+        }
+        if($coupon_check==1){
+            return redirect()->back()->with('error','Mã giảm giá chỉ được nhập 1 lần');
+        }
+        else{
         if($coupon){
             $count_coupon = $coupon->count();
             if($count_coupon>0){
@@ -366,8 +458,9 @@ class CheckoutController extends Controller
             }
 
         }else{
-            return redirect()->back()->with('error','Mã giảm giá không đúng');
+            return redirect()->back()->with('error','Mã giảm giá không đúng - Mã đã hết hạn');
         }
+    }
     }
 
     public function unset_coupon(){
@@ -424,7 +517,19 @@ class CheckoutController extends Controller
 
     public function confirm_order(Request $request){
          $data = $request->all();
+         //get coupon
 
+         $coupon = Coupon::where('coupon_code',$data['order_coupon'])->first();
+         if($coupon){
+         $giamgia = $data['order_coupon'];
+         $coupon->coupon_time = $coupon->coupon_time-1;
+         $coupon->coupon_used = $coupon->coupon_used.','.Session::get('customer_id');
+         $coupon->save();
+         }
+         else{
+            $giamgia = "không có";
+         }
+         // get shipping
          $shipping = new Shipping();
          $shipping->shipping_name = $data['shipping_name'];
          $shipping->shipping_email = $data['shipping_email'];
@@ -458,9 +563,54 @@ class CheckoutController extends Controller
                 $order_details->save();
             }
          }
+
+        //Gửi mail đặt hàng thành công
+        $title_email = "ATVSHOP Thông báo đặt hàng thàng công";
+        $customer = Customer::find(Session::get('customer_id'));
+        $data['email'][]=$customer->customer_email;
+         
+         if(Session::get('fee')==true){
+            $fee = Session::get('fee');
+         }else{
+            $fee = "30000";
+         }
+         $ngay = $order_details->created_at;
+         //lấy giỏ hàng
+         if(Session::get('cart')==true){
+            foreach(Session::get('cart') as $key => $cart_mail){
+                $cart_array[] = array(
+                'product_name' => $cart_mail['product_name'],
+                'product_price' => $cart_mail['product_price'],
+                'product_qty' => $cart_mail['product_qty']
+                );
+            }
+         }
+
+         $order_mail = array(
+            'shipping_name' =>$data['shipping_name'],
+            'shipping_email' =>$data['shipping_email'],
+            'shipping_phone' =>$data['shipping_phone'],
+            'shipping_address' =>$data['shipping_address'],
+            'shipping_note' =>$data['shipping_note'],
+            'shipping_method' =>$data['shipping_method'],
+            'coupon_code' =>$giamgia,
+            'order_code' =>$checkout_code,
+            'fee' =>$fee,
+            'ngay' =>$ngay,
+            'email_user' => $customer->customer_email
+         );
+
+           // Mail::send('pages.send_mail_order',['order_mail'=>$order_mail, 'cart_array'=>$cart_array] ,function($message) use ($title_email,$data){
+
+           //          $message->to($data['email'])->subject($title_email);//send this mail with subject
+           //          $message->from($data['email'],$title_email);//send from this mail
+           //      });
          Session::forget('coupon');
          Session::forget('fee');
+         Session::forget('totalusd');
          Session::forget('cart');
+         Session::forget('paypal_success');
+         return redirect()->route('taikhoan')->with('status','Mua hàng thành công, lịch sử đơn hàng đã được cập nhật. Cảm ơn quý khách đã mua hàng tại ATVSHOP');
     }
     public function del_fee(){
         Session::forget('fee');
@@ -472,38 +622,88 @@ class CheckoutController extends Controller
         $data = $request->all();
         $order = Order::find($data['order_id']);
         $order->order_status = $data['order_status'];
+        
+
         $order->save();
-        if($order->order_status=='2'){
+        
+        $order_date1 = $order->created_at->format('Y-m-d');
+        $statistical = Statistical::where('order_date',$order_date1)->get();
+        if($statistical){
+            $statistical_count = $statistical->count();
+        }else{
+            $statistical_count=0;
+        }
+
+        if($order->order_status=="2"){
+
+            $total_order = 0;
+            $sales =0;
+            $profit=0;
+            $quantity=0;
+
             foreach($data['order_product_id'] as $key => $product_id){
                 
                 $product = Product::find($product_id);
                 $product_quantity = $product->product_quantity;
                 $product_sold = $product->product_sold;
+                $product_price = $product->product_price;
                 foreach($data['quantity'] as $key2 => $qty){
                         if($key==$key2){
                                 $pro_remain = $product_quantity - $qty;
                                 $product->product_quantity = $pro_remain;
                                 $product->product_sold = $product_sold + $qty;
+
                                 $product->save();
+
+                                //update doanh thu
+                                $total_order += 1;
+                                $sales +=$product_price*$qty;
+                                $profit=$sales/5;
+                                $quantity+=$qty;
                         }
                 }
             }
-        }elseif($order->order_status!='2' && $order->order_status!='3'){
-            foreach($data['order_product_id'] as $key => $product_id){
-                
-                $product = Product::find($product_id);
-                $product_quantity = $product->product_quantity;
-                $product_sold = $product->product_sold;
-                foreach($data['quantity'] as $key2 => $qty){
-                        if($key==$key2){
-                                $pro_remain = $product_quantity + $qty;
-                                $product->product_quantity = $pro_remain;
-                                $product->product_sold = $product_sold - $qty;
-                                $product->save();
-                        }
-                }
-            }
+            
+        if($statistical_count > 0) {
+           
+            $sta_update = Statistical::where('order_date',$order_date1)->first();
+
+            $sta_update->sales= $sta_update->sales+$sales;
+            $sta_update->profit= $sta_update->profit+$profit;
+            $sta_update->quantity= $sta_update->quantity+$quantity;
+            $sta_update->total_order= $sta_update->total_order+$total_order;
+            $sta_update->order_date= $order_date1;
+            $sta_update->save();
+
+        }else{
+            
+            $sta_new = new Statistical();
+            $sta_new->sales=$sales;
+            $sta_new->profit=$profit;
+            $sta_new->quantity=$quantity;
+            $sta_new->total_order= $total_order;
+            $sta_new->order_date= $order_date1;
+            $sta_new->save();
+
         }
+        }
+         
+        // elseif($order->order_status!='2' && $order->order_status!='3'){
+        //     foreach($data['order_product_id'] as $key => $product_id){
+                
+        //         $product = Product::find($product_id);
+        //         $product_quantity = $product->product_quantity;
+        //         $product_sold = $product->product_sold;
+        //         foreach($data['quantity'] as $key2 => $qty){
+        //                 if($key==$key2){
+        //                         $pro_remain = $product_quantity + $qty;
+        //                         $product->product_quantity = $pro_remain;
+        //                         $product->product_sold = $product_sold - $qty;
+        //                         $product->save();
+        //                 }
+        //         }
+        //     }
+        // }
 
 
     }

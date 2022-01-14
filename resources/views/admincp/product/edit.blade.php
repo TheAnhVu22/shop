@@ -78,11 +78,11 @@
                         <div class="row mb-3">
                             <label for="product_image" class="col-md-4 col-form-label text-md-right">Ảnh:</label>
                             <div class="col-md-6 border">
-                                <input type="file" class="form-control" name="product_image">
+                                <input type="file" class="form-control img_preview" onchange="previewFile(this);" name="product_image">
                             </div>
                             <hr>
                             <div class="col-2">
-                            <img src="{{ asset('uploads/'.$product->product_image) }}" alt="" height="200">
+                            <img id="previewimg" src="{{ asset('uploads/'.$product->product_image) }}" alt="" height="200">
                             </div>
                             
                         </div>

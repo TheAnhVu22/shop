@@ -24,4 +24,12 @@ class Product extends Model
     {
         return $this->hasMany('App\Models\Comment', 'product_id', 'id');
     }
+    public function gallery()
+    {
+        return $this->hasMany('App\Models\Gallery', 'product_id', 'id');
+    }
+    public function rating()
+    {
+        return $this->hasMany('App\Models\Rating', 'product_id','id');
+    }
 }

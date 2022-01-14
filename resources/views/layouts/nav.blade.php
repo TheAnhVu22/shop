@@ -9,17 +9,18 @@
         <hr class="horizontal light mt-0 mb-2">
         <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
           <ul class="navbar-nav">
+
             <li class="nav-item">
-              <a class="nav-link text-white active bg-gradient-primary" href="{{ route('home') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='home' ? 'active bg-gradient-primary' : ''}}" href="{{ route('home') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
-                <span class="nav-link-text ms-1">Trang chủ</span>
+                <span class="nav-link-text ms-1 ">Trang chủ</span>
               </a>
             </li>
             @role('admin')
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ url('/manage_user') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='manage_user' ? 'active bg-gradient-primary' : ''}}" href="{{ url('/manage_user') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
@@ -29,7 +30,7 @@
             @endrole
             @hasanyrole('Manager|admin')
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ route('manage_order') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='manage_order' ? 'active bg-gradient-primary' : ''}}" href="{{ route('manage_order') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
@@ -39,7 +40,7 @@
             @endhasanyrole
             @hasanyrole('Manager|admin|Staff')
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ route('category.index') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='category' ? 'active bg-gradient-primary' : ''}}" href="{{ route('category.index') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
@@ -47,7 +48,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ route('brand.index') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='brand' ? 'active bg-gradient-primary' : ''}}" href="{{ route('brand.index') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
@@ -55,7 +56,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ route('product.index') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='product' ? 'active bg-gradient-primary' : ''}}" href="{{ route('product.index') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
@@ -63,21 +64,21 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ route('coupon.index') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='coupon' ? 'active bg-gradient-primary' : ''}}" href="{{ route('coupon.index') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">  
                 </div>
                 <span class="nav-link-text ms-1">Mã giảm giá</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ route('delivery') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='delivery' ? 'active bg-gradient-primary' : ''}}" href="{{ route('delivery') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">  
                 </div>
                 <span class="nav-link-text ms-1">Phí vận chuyển</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ route('cate_blog.index') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='cate_blog' ? 'active bg-gradient-primary' : ''}}" href="{{ route('cate_blog.index') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
@@ -85,7 +86,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ url('/video') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='video' ? 'active bg-gradient-primary' : ''}}" href="{{ url('/video') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
@@ -93,11 +94,35 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white " href="{{ url('/binh_luan') }}">
+              <a class="nav-link text-white {{Request::segment(1)=='binh_luan' ? 'active bg-gradient-primary' : ''}}" href="{{ url('/binh_luan') }}">
                 <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                   
                 </div>
                 <span class="nav-link-text ms-1">Bình luận</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white {{Request::segment(1)=='read_data' ? 'active bg-gradient-primary' : ''}}" href="{{ url('/read_data') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  
+                </div>
+                <span class="nav-link-text ms-1">Google drive</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white {{Request::segment(1)=='nhataitro' ? 'active bg-gradient-primary' : ''}}" href="{{ url('/nhataitro') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  
+                </div>
+                <span class="nav-link-text ms-1">Nhà tài trợ</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white {{Request::segment(1)=='icon' ? 'active bg-gradient-primary' : ''}}" href="{{ url('/icon') }}">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                  
+                </div>
+                <span class="nav-link-text ms-1">Mạng xã hội</span>
               </a>
             </li>
             @endhasanyrole
@@ -129,3 +154,4 @@
           </div>
         </div>
   </aside>
+  

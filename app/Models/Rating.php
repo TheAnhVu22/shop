@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Rating extends Model
 {
     use HasFactory;
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product','product_id','id');    
+    }
 }

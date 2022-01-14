@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Video;
+use App\Models\Nhataitro;
 class VideoController extends Controller
 {
     public function video()
@@ -99,5 +100,118 @@ class VideoController extends Controller
         $video->video_link=$link;
         $video->video_desc=$desc;
         $video->save();
+    }
+
+    public function nhataitro()
+    {
+        return view('admincp.nhataitro.index');
+    }
+    public function select_ntt()
+    {
+        $nhataitro = Nhataitro::get();
+        $output = '<div class="table-responsive">
+                <table class="table align-items-center" id="xxx">
+                  <thead>
+                    <tr>
+                      <th class="text-center">STT</th>
+                      <th class="text-center">Tên nhà tài trợ</th>
+                      <th class="text-center">Ảnh</th>
+                      <th class="text-center">Thông tin</th>
+                      <th class="text-center"></th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>';
+
+        foreach ($nhataitro as $k => $dulieu) {
+            $output.='<tr>
+                                             
+                      <td class="text-center">
+                        '.$k.'
+                      </td>
+                      <td class="text-center edit_ntt" contenteditable id="ntt_name_'.$dulieu->id.'" data-type="name" data-ntt_id="'.$dulieu->id.'">
+                          '.$dulieu->name.'
+                      </td class="text-center">
+                      <td class="text-center " >
+                        <img src="'.asset('uploads/'.$dulieu->image).'" width="100" height="100">
+                        <input type="file" class="file_image" data-ntt_id='.$dulieu->id.' id="file-'.$dulieu->id.'">
+                      </td>
+                      <td class="text-center edit_ntt" contenteditable id="ntt_desc_'.$dulieu->id.'" data-type="desc" data-ntt_id="'.$dulieu->id.'">
+                           '.$dulieu->desc.'
+                      </td>
+                      <td class="text-center">
+                          <button class="btn btn-danger" id="'.$dulieu->id.'" style="cursor:pointer;" onclick="delete_ntt(this.id)">Xóa</button>
+                      </td>
+                    
+                    </tr>';
+        }
+        $output.=' 
+                  </tbody>
+                </table>
+              </div>
+            </div>';
+        echo $output;
+    }
+
+    public function add_ntt(Request $request)
+    {
+
+        $data= $request->all();
+        $get_image = $request->file('file');
+
+        $name = $data['name'];
+        $desc = $data['desc'];
+        $path = 'uploads/';
+        $nhataitro = new Nhataitro();
+        if($get_image){
+            $get_name_image = $get_image->getClientOriginalName();
+            $name_image = current(explode('.',$get_name_image));
+            $new_image = $name_image.rand(0,99).'.'.$get_image->getClientOriginalExtension();
+            $get_image->move($path,$new_image);
+            $nhataitro->image=$new_image;
+
+        }
+        $nhataitro->name = $name;
+        $nhataitro->desc = $desc;
+        $nhataitro->save();
+    }
+    public function delete_ntt(Request $request)
+    {
+        $data = $request->all();
+        
+        nhataitro::find($data['id'])->delete();
+    }
+    public function edit_ntt(Request $request)
+    {
+        $data = $request->all();
+        $id = $data['id'];
+
+        $name = $data['text'];
+        $type = $data['type'];
+        $nhataitro =Nhataitro::find($id);
+        if($type=='name'){
+            $nhataitro->name = $name;
+        }else{
+            $nhataitro->desc = $name;
+        }
+        $nhataitro->save();
+    }
+
+    public function update_ntt(Request $request)
+    {
+       $data = $request->all();
+        $id = $data['id'];
+        $path = 'uploads/';
+        $nhataitro =Nhataitro::find($id);
+        $get_image = $request->file('file');
+         if($get_image){
+            $get_name_image = $get_image->getClientOriginalName();
+            $name_image = current(explode('.',$get_name_image));
+            $new_image = $name_image.rand(0,99).'.'.$get_image->getClientOriginalExtension();
+            $get_image->move($path,$new_image);
+            $nhataitro->image=$new_image;
+
+        }
+        $nhataitro->save();
     }
 }

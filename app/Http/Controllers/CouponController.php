@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
 use Session;
+use Carbon\Carbon;
 class CouponController extends Controller
 {
     /**
@@ -14,8 +15,9 @@ class CouponController extends Controller
      */
     public function index()
     {
+        $now = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
         $coupon = Coupon::orderBy('id','DESC')->get();
-        return view('admincp.coupon.index',compact('coupon'));
+        return view('admincp.coupon.index',compact('coupon','now'));
     }
 
     /**
@@ -43,6 +45,9 @@ class CouponController extends Controller
         $coupon->coupon_time = $data['coupon_time'];
         $coupon->coupon_condition = $data['coupon_condition'];
         $coupon->coupon_number = $data['coupon_number'];
+        $coupon->coupon_date_start = $data['coupon_date_start'];
+        $coupon->coupon_date_end = $data['coupon_date_end'];
+        
         $coupon->save();
         Session::put('message','Thêm mã giảm giá thành công');
         return redirect()->back()->with('status','Thêm mã thành công');
@@ -87,6 +92,8 @@ class CouponController extends Controller
         $coupon->coupon_time = $data['coupon_time'];
         $coupon->coupon_condition = $data['coupon_condition'];
         $coupon->coupon_number = $data['coupon_number'];
+        $coupon->coupon_date_start = $data['coupon_date_start'];
+        $coupon->coupon_date_end = $data['coupon_date_end'];
         $coupon->save();
         return redirect()->route('coupon.index')->with('status','Cập nhật mã thành công');
     }

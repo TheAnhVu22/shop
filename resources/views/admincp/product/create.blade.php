@@ -71,7 +71,8 @@
                         <div class="row mb-3">
                             <label for="product_image" class="col-md-4 col-form-label text-md-right">Ảnh:</label>
                             <div class="col-md-6 border">
-                                <input type="file" class="form-control" name="product_image">
+                                <input type="file" class="form-control img_preview" onchange="previewFile(this);" name="product_image">
+                                <img id="previewimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png" alt="" width="30%">
                             </div>
                         </div>
 
@@ -82,13 +83,13 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="product_price" class="col-md-4 col-form-label text-md-right">Giá:</label>
+                            <label for="product_price" class="col-md-4 col-form-label text-md-right ">Giá:</label>
                             <div class="col-md-6 border">
                                 <input autocomplete="off" type="text" class="form-control" name="product_price" value="{{ old('product_price') }}" >
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="product_quantity" class="col-md-4 col-form-label text-md-right">Số lượng:</label>
+                            <label for="product_quantity" class="col-md-4 col-form-label text-md-right ">Số lượng:</label>
                             <div class="col-md-6 border">
                                 <input autocomplete="off" type="text" class="form-control" name="product_quantity" value="{{ old('product_quantity') }}" >
                             </div>

@@ -40,6 +40,8 @@
                 <h6 class="text-white text-capitalize ps-3">Thông tin khách hàng</h6>
               </div>
             </div>
+            <h6>Mã đơn hàng : {{$order->order_code}}</h6>
+            <h6>Ngày mua : {{$order->created_at}}</h6>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table align-items-center">
@@ -56,15 +58,21 @@
                     <tr>
                      
                       <td class="text-center">
-                        {{$order->customer->customer_name}}
+                        @if (isset($order->customer->customer_name))
+                          {{$order->customer->customer_name}}
+                        @endif
                       </td>
 
                       <td class="text-center">
-                        {{$order->customer->customer_email}}
+                        @if (isset($order->customer->customer_name))
+                          {{$order->customer->customer_email}}
+                        @endif
                       </td class="text-center">
 
                       <td class="text-center">
-                        {{$order->customer->customer_phone}}
+                        @if (isset($order->customer->customer_name))
+                          {{$order->customer->customer_phone}}
+                        @endif
                       </td>
                      
                     </tr>
@@ -117,8 +125,10 @@
                       <td class="text-center">
                         @if ($order->shipping->shipping_method=='0')
                            Thanh toán bằng thẻ
-                        @else 
+                         @elseif($order->shipping->shipping_method=='1') 
                             Thanh toán bằng tiền mặt
+                        @else
+                          Đã thanh toán bằng paypal
                         @endif
                       </td>
                       <td class="text-center">
@@ -256,29 +266,17 @@
                     <option value="">----Chọn hình thức đơn hàng-----</option>
                     <option id="{{$order->id}}" selected value="1">Chưa xử lý</option>
                     <option id="{{$order->id}}" value="2">Đã xử lý-Đã giao hàng</option>
-                    <option id="{{$order->id}}" value="3">Hủy đơn hàng-tạm giữ</option>
+                   
                   </select>
                 </form>
                 @elseif($order->order_status=='2')
                 <form>
                   @csrf
                   <select class="form-control order_dulieu border">
-                    <option value="">----Chọn hình thức đơn hàng-----</option>
-                    <option id="{{$order->id}}" value="1">Chưa xử lý</option>
+                   
+                    
                     <option id="{{$order->id}}" selected value="2">Đã xử lý-Đã giao hàng</option>
-                    <option id="{{$order->id}}" value="3">Hủy đơn hàng-tạm giữ</option>
-                  </select>
-                </form>
-
-                @else
-                <form>
-                   @csrf
-
-                  <select class="form-control order_dulieu custom-select border">
-                    <option value="">----Chọn hình thức đơn hàng-----</option>
-                    <option id="{{$order->id}}" value="1">Chưa xử lý</option>
-                    <option id="{{$order->id}}"  value="2">Đã xử lý-Đã giao hàng</option>
-                    <option id="{{$order->id}}" selected value="3">Hủy đơn hàng-tạm giữ</option>
+                    
                   </select>
                 </form>
 

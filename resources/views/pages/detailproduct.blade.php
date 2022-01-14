@@ -122,6 +122,9 @@
 								<p><b>Thương hiệu:</b> {{$product->brand->brand_name}}</p>
 								<p><b>Ngày đăng:</b> {{$product->created_at}}</p>
 								<button class="btn btn-danger btn_thich mt-2"><i class="fa fa-heart" aria-hidden="true"></i>Thêm yêu thích</button>
+
+								<div class="fb-share-button" data-href="http://shopanhthe.com/shop/public/chi_tiet_san_pham/chuot-bluetooth-apple-mk2e3-trang" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fshopanhthe.com%2Fshop%2Fpublic%2Fchi_tiet_san_pham%2Fchuot-bluetooth-apple-mk2e3-trang&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Chia sẻ</a></div>
+								
 								<!-------------thẻ tag-------------->
 					          <h4><i class="fas fa-tag"></i> Từ khóa: </h4>
 					          @php

@@ -41,9 +41,16 @@
                 <h6 class="text-white text-capitalize ps-3">Mã giảm giá</h6>
               </div>
             </div>
+            
             <div class="card-body">
               <div class="table-responsive">
+                  @if (session('message'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('message') }}
+                        </div>
+                    @endif
                 <table class="table align-items-center" id="xxx">
+
                   <thead>
                     <tr>
                       <th class="text-center">STT</th>
@@ -52,6 +59,10 @@
                       <th class="text-center">Kiểu</th>
                       <th class="text-center">Giá trị giảm</th>
                       <th class="text-center">Số lượng mã</th>
+                      <th>Ngày bắt đầu</th>
+                      <th>Ngày kết thúc</th>
+                      <th>Trạng thái</th>
+                      <th>Gửi mã</th>
                       <th></th>
                       <th></th>
                     </tr>
@@ -79,10 +90,31 @@
                         
                       </td>
                       <td class="text-center">
+                        {{$dulieu->coupon_number}}
+                        
+                      </td>
+                      <td class="text-center">
                         {{$dulieu->coupon_time}}
                       </td>
                       <td class="text-center">
-                        {{$dulieu->coupon_number}}
+                        {{$dulieu->coupon_date_start}}
+                      </td>
+                      <td class="text-center">
+                        {{$dulieu->coupon_date_end}}
+                      </td>
+                      <td class="text-center">
+                        @if ($dulieu->coupon_date_end<$now)
+                           <span class="badge badge-sm bg-gradient-danger">Hết hạn</span>
+                         @else
+                          <span class="badge badge-sm bg-gradient-success">Còn hạn</span>
+                        @endif
+                      </td>
+                      <td class="text-center">
+                        @if ($dulieu->coupon_date_end>=$now)
+                        <p><a href="{{ url('/send_coupon/'.$dulieu->id) }}" class="btn btn-info">Gửi mã giảm giá cho khánh hàng</a></p>
+                        @else
+                          
+                        @endif
                       </td>
                       <td class="text-center">
                         <a href="{{ route('coupon.edit',$dulieu->id) }}" class="btn btn-warning btn-sm">

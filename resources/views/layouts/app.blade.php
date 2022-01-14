@@ -19,6 +19,8 @@
     {{-- <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> --}}
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
 
+    <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <!-- Nucleo Icons -->
@@ -32,7 +34,8 @@
   <link id="pagestyle" href="{{ asset('css/material-dashboard.css') }}" rel="stylesheet" />
 
   <link id="pagestyle" href="{{ asset('css/bootstrap-tagsinput.css') }}" rel="stylesheet" />
-
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 </head>
 <body class="g-sidenav-show  bg-gray-200">
     <div id="app">
@@ -51,22 +54,22 @@
                     <ul class="navbar-nav me-auto">
                       
                             <li class="nav-item">
-                              <a class="nav-link" href="{{ route('home') }}">Trang chủ</a>
+                              <a class="nav-link {{Request::segment(1)=='home' ? 'active bg-light' : ''}}" href="{{ route('home') }}">Trang chủ</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" aria-current="page" href="{{ route('category.index') }}">Danh mục</a>
+                              <a class="nav-link {{Request::segment(1)=='category' ? 'active bg-light' : ''}}" aria-current="page" href="{{ route('category.index') }}">Danh mục</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" href="{{ route('brand.index') }}">Thương hiệu</a>
+                              <a class="nav-link {{Request::segment(1)=='brand' ? 'active bg-light' : ''}}" href="{{ route('brand.index') }}">Thương hiệu</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" href="{{ route('product.index') }}">Sản phẩm</a>
+                              <a class="nav-link {{Request::segment(1)=='product' ? 'active bg-light' : ''}}" href="{{ route('product.index') }}">Sản phẩm</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" href="{{ route('blog.index') }}">Blog</a>
+                              <a class="nav-link {{Request::segment(1)=='blog' ? 'active bg-light' : ''}}" href="{{ route('blog.index') }}">Blog</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" href="{{ route('slide.index') }}">Slide</a>
+                              <a class="nav-link {{Request::segment(1)=='slide' ? 'active bg-light' : ''}}" href="{{ route('slide.index') }}">Slide</a>
                             </li>
                           
                     </ul>
@@ -110,254 +113,7 @@
   <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
 {{--   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script> --}}
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script src="{{ asset('js/plugins/chartjs.min.js') }}"></script>
-  <script>
-    var ctx = document.getElementById("chart-bars").getContext("2d");
-
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["M", "T", "W", "T", "F", "S", "S"],
-        datasets: [{
-          label: "Sales",
-          tension: 0.4,
-          borderWidth: 0,
-          borderRadius: 4,
-          borderSkipped: false,
-          backgroundColor: "rgba(255, 255, 255, .8)",
-          data: [50, 20, 10, 22, 50, 10, 40],
-          maxBarThickness: 6
-        }, ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              suggestedMin: 0,
-              suggestedMax: 500,
-              beginAtZero: true,
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-              color: "#fff"
-            },
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-
-
-    var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-    new Chart(ctx2, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0,
-          borderWidth: 0,
-          pointRadius: 5,
-          pointBackgroundColor: "rgba(255, 255, 255, .8)",
-          pointBorderColor: "transparent",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderWidth: 4,
-          backgroundColor: "transparent",
-          fill: true,
-          data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-
-    var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
-
-    new Chart(ctx3, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0,
-          borderWidth: 0,
-          pointRadius: 5,
-          pointBackgroundColor: "rgba(255, 255, 255, .8)",
-          pointBorderColor: "transparent",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderWidth: 4,
-          backgroundColor: "transparent",
-          fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              padding: 10,
-              color: '#f8f9fa',
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-  </script>
+  
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -393,7 +149,7 @@
                 //Xóa các ký tự đặt biệt
                 slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
                 //Đổi khoảng trắng thành ký tự gạch ngang
-                slug = slug.replace(/ /gi, "-");
+                slug = slug.replace(/ /gi, "-");a
                 //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
                 //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
                 slug = slug.replace(/\-\-\-\-\-/gi, '-');
@@ -412,6 +168,8 @@
   <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"></script>
   <script>
+
+
     $(document).ready(function() {
      
     // Cấu hình các nhãn phân trang
@@ -443,10 +201,19 @@ $(document).ready( function () {
 } );
 </script>
 
-<script type="text/javascript" src="{{ asset('ckeditor_4.17.1_full_easyimage/ckeditor/ckeditor.js') }}"></script>
+<script type="text/javascript" src="{{ asset('ckeditor_4.17.1_standard/ckeditor/ckeditor.js') }}"></script>
 <script type="text/javascript">
-            CKEDITOR.replace('noidungblog');
-            CKEDITOR.replace('noidung_sanpham');
+            CKEDITOR.replace('noidungblog',{
+                filebrowserImageUploadUrl: "{{url('uploads-ckeditor?_token='.csrf_token())}}",
+                filebrowserBrowseUrl: "{{url('file-browser?_token='.csrf_token())}}",
+                filebrowserUploadMethod: 'form'
+            });
+
+            CKEDITOR.replace('noidung_sanpham',{
+                filebrowserImageUploadUrl: "{{url('uploads-ckeditor?_token='.csrf_token())}}",
+                filebrowserBrowseUrl: "{{url('file-browser?_token='.csrf_token())}}",
+                filebrowserUploadMethod: 'form'
+            });
         </script>
 
  <!--------------------------- xử lý vận chuyển ajax ------------------------------------>
@@ -539,6 +306,7 @@ $(document).ready( function () {
     $('.order_dulieu').change(function(){
         var order_status = $(this).val();
         var order_id = $(this).children(":selected").attr("id");
+         // alert(order_status);
         var _token = $('input[name="_token"]').val();
         // alert(order_status); lấy ra status order
         // alert(order_id); lấy ra id order
@@ -575,7 +343,9 @@ $(document).ready( function () {
                             method: 'POST',
                             data:{_token:_token, order_status:order_status ,order_id:order_id ,quantity:quantity, order_product_id:order_product_id},
                             success:function(data){
+                               
                                 alert('Thay đổi tình trạng đơn hàng thành công');
+                                 
                                 location.reload();
                             }
                 });
@@ -867,5 +637,406 @@ $(document).ready( function () {
     })
 
   </script>
+
+ {{--  chọn ngày tháng năm --}}
+  <script>
+  $( function() {
+    $( "#datepicker" ).datepicker({
+      dateFormat:"yy-mm-dd",
+    duration:"slow"
+    });
+    
+  } );
+  $( function() {
+    $( "#datepicker2" ).datepicker({
+      dateFormat:"yy-mm-dd",
+    duration:"slow"
+    });
+    
+  } );
+  </script>
+
+ {{--  Thống kê --}}
+ 
+ <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      chart30daysorder();
+
+      var chart = new Morris.Line({
+      
+        element: 'myfirstchart',
+        lineColors:['black','red','blue','green','yellow'],
+        pointFillColors: ['cyan'],
+        pointStrokeColors: ['gray'],
+        fillOpacity:0.6,
+        hideHover: 'auto',
+        parseTime: false,
+
+       
+        xkey: 'period',
+       
+        ykeys: ['order','sales','profit','quantity'],
+        behaveLikeLine: true,
+        labels: ['Số đơn hàng','Doanh số','Lợi nhuận','Số lượng bán']
+        });
+
+      function chart30daysorder() {
+        $.ajax({
+          url:'{{ url('/days-order') }}',
+          method:'POST',
+          dataType:'JSON',
+          headers:{
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+          },
+          data:{},
+          success:function(data) {
+            chart.setData(data);
+          }
+        });
+      }
+
+      $('.dashboard-filter').change(function() {
+        var dashboard_value = $(this).val();
+        
+         // alert(dashboard_value);
+        // alert(to_date);
+        $.ajax({
+          url:"{{ url('/dashboard-filter') }}",
+          method:'POST',
+          dataType:'JSON',
+          headers:{
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+          },
+          data:{dashboard_value:dashboard_value},
+          success:function(data) {
+             chart.setData(data);
+            
+          }
+        });
+      });
+
+      $('#btn-dashboard-filter').click(function() {
+        var from_date = $('#datepicker').val();
+        var to_date = $('#datepicker2').val();
+        //  alert(from_date);
+        // alert(to_date);
+        $.ajax({
+          url:"{{ url('/filter-by-date') }}",
+          method:'POST',
+          dataType:'JSON',
+          headers:{
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+          },
+          data:{from_date:from_date,to_date:to_date},
+          success:function(data) {
+             chart.setData(data);
+            
+          }
+        });
+      });
+    });
+  </script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+    
+    var colorDanger = "#FF1744";
+    Morris.Donut({
+    element: 'donut-example',
+    resize: true,
+    colors: [
+      '#f02929',
+      '#f0e929',
+      '#47f029',
+      '#29edf0',
+      '#f029d2'
+    ],
+    //labelColor:"#cccccc", // text color
+    //backgroundColor: '#333333', // border color
+    data: [
+      {label:"San pham", value:{{$tk_product}}},
+      {label:"Bai viet", value:{{$tk_post}}},
+      {label:"Don hang", value:{{$tk_order}}},
+      {label:"Khach hang", value:{{$tk_customer}}},
+      {label:"Video", value:{{$tk_video}}}
+    ]
+    });
+
+});
+  </script>
+  <script type="text/javascript" src="{{ asset('js/simple.money.format.js') }}"></script>
+  <script type="text/javascript">
+      $('.money').simpleMoneyFormat();
+  </script>
+
+  <script type="text/javascript">
+
+        
+        function delete_ntt(id) {
+            //alert(id);
+            if(confirm('Xác nhận xóa')){
+            $.ajax({
+                url:"{{ route('delete_ntt') }}",
+                method:'POST',
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data:{id:id},
+                success:function(data){
+                    $('#exampleModal').modal();
+                    load_nhataitro();
+                }
+            });
+
+        }
+        }
+        load_nhataitro();
+        function load_nhataitro() {
+
+            $.ajax({
+                url:"{{ route('select_ntt') }}",
+                method:'POST',
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                success:function(data){
+                    $('.nhataitro').html(data);
+                }
+            });
+        }
+
+         $(document).on('blur','.edit_ntt',function(){
+            
+            var id = $(this).data('ntt_id');
+            var type = $(this).data('type');
+            var text = $('#ntt_'+type+'_'+id).text();
+            // alert(id);
+            // alert(type);
+            //  alert(text);
+             var form_data = new FormData();
+             form_data.append('id',id);
+             form_data.append('type',type);
+             form_data.append('text',text);
+
+            $.ajax({
+                url:"{{ route('edit_ntt') }}",
+                method:'POST',
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                contentType:false,
+                cache:false,
+                processData:false,
+                data:form_data,
+                success:function(data){
+                    alert("Sửa thành công");
+                    load_nhataitro();
+                }
+            });
+        
+        });
+         $(document).on('change','.file_image',function() {
+          var id = $(this).data('ntt_id');
+          var image = document.getElementById('file-'+id).files[0];
+          var form_data = new FormData();
+
+          form_data.append("file",image);
+          form_data.append("id",id);
+
+          $.ajax({
+          url:"{{ route('update_ntt') }}",
+          method:"POST",
+          headers:{
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          data:form_data,
+          contentType:false,
+          cache:false,
+          processData:false,
+          success:function(){
+            alert("cập nhật hình ảnh thành công");
+            load_nhataitro();
+          }
+        });
+
+        });
+        $('.them-ntt').click(function() {
+            var name = $('.name').val();
+            var desc = $('.desc').val();
+            var image = $('#image_ntt')[0].files[0];
+            // alert(name);
+            // alert(desc);
+             // alert(image);
+             var form_data = new FormData();
+             form_data.append('name',name);
+             form_data.append('desc',desc);
+             form_data.append('file',image);
+
+            $.ajax({
+                url:"{{ route('add_ntt') }}",
+                method:'POST',
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                contentType:false,
+                cache:false,
+                processData:false,
+                data:form_data,
+                success:function(data){
+                    alert("Thêm thành công");
+                    load_nhataitro();
+                }
+            });
+        });
+
+  </script>
+
+  <script type="text/javascript">
+    function delete_icon(id) {
+        if(confirm('Xác nhận xóa')){
+            $.ajax({
+                url:"{{ url('/delete_icon') }}",
+                method:'POST',
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: {id:id},
+                success:function(){
+                    load_icon();
+                }
+            });
+        }
+    }
+      load_icon();
+      function load_icon() {
+          $.ajax({
+            url:"{{ url('/select_icon') }}",
+            method:'POST',
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            },
+            success:function(data){
+                $('#icon').html(data);
+            }
+          });
+      }
+
+      $(document).on('blur','.edit_icon',function(){
+        var id = $(this).data('icon_id');
+        var type = $(this).data('type');
+        var text = $('#edit_'+type+'_'+id).text();
+        // alert(id);
+        // alert(type);
+        // alert(text);
+        var form_data=new FormData();
+        form_data.append('id',id);
+        form_data.append('type',type);
+        form_data.append('text',text);
+        $.ajax({
+            url:"{{ url('/edit_icon') }}",
+            method:'POST',
+            headers:{
+                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content'),
+            },
+            data:form_data,
+            contentType:false,
+            cache:false,
+            processData:false,
+            success:function(data){
+                alert('Cập nhật thành công');
+                load_icon();
+            }
+        });
+      });
+
+      $(document).on('change','.file',function() {
+        var id = $(this).data('icon_id');
+        var image = document.getElementById('file-'+id).files[0];
+        var form_data = new FormData();
+
+          form_data.append("file",image);
+          form_data.append("id",id);
+        $.ajax({
+            url:"{{ url('/edit_img') }}",
+            method:'POST',
+            headers:{
+                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content'),
+            },
+            data:form_data,
+            contentType:false,
+            cache:false,
+            processData:false,
+            success:function(data){
+                alert('Cập nhật ảnh thành công');
+                load_icon();
+            }
+        });
+      });
+
+      $('.add_icon').click(function() {
+        var name = $('.name').val();
+        var link=$('.link').val();
+        var image = $('.image')[0].files[0];
+        // alert(name);
+        // alert(link);
+        // alert(image);
+        var form_data=new FormData();
+        form_data.append('name',name);
+        form_data.append('link',link);
+        form_data.append('file',image);
+        $.ajax({
+            url:"{{ url('/add_icon') }}",
+            method:'POST',
+            headers:{
+                'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content'),
+            },
+            data:form_data,
+             contentType:false,
+          cache:false,
+          processData:false,
+            success:function(data){
+                load_icon();
+            }
+        });
+      });
+  </script>
+
+{{-- file manager --}}
+
+  <script>
+  var options = {
+    filebrowserImageBrowseUrl: '/shop/public/laravel-filemanager?type=Images',
+    filebrowserImageUploadUrl: 'laravel-filemanager/upload?type=Images&_token=',
+    filebrowserBrowseUrl: 'laravel-filemanager?type=Files',
+    filebrowserUploadUrl: 'laravel-filemanager/upload?type=Files&_token='
+  };
+</script>
+
+<script>
+CKEDITOR.replace('my-editor', options);
+</script>
+
+<script type="text/javascript">
+    function previewFile(input){
+        var file = $('.img_preview').get(0).files[0];
+        console.log(file);
+        if(file){
+            var reader = new FileReader();
+            reader.onload = function(){
+                $('#previewimg').attr("src",reader.result);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+<style type="text/css">
+    #toast-container{
+        background-color: green;
+    }
+</style>
+<script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+{!! Toastr::message() !!}
 </body>
 </html>

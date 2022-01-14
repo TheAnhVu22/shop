@@ -14,4 +14,8 @@ class Wards extends Model
     ];
     public $table='tbl_xaphuongthitran';
     public $primaryKey = 'xaid';
+    public function province()
+    {
+        return $this->belongsTo('App\Models\Province', 'maqh');
+    }
 }

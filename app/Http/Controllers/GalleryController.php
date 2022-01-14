@@ -58,7 +58,7 @@ class GalleryController extends Controller
     }
     public function insert_gallery(Request $request,$pro_id)
     {
-         $get_image = $request->file('file');
+        $get_image = $request->file('file');
         if ($get_image) {
             foreach ($get_image as $key) {
         $path = 'uploads/';

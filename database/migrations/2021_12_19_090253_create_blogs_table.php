@@ -21,6 +21,7 @@ class CreateBlogsTable extends Migration
             $table->string('blog_author');
             $table->text('blog_slug');
             $table->integer('cate_blog_id');
+            $table->integer('blog_views');
             $table->timestamps();
         });
     }

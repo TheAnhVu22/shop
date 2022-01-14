@@ -23,10 +23,16 @@
 
         <meta property="og:site_name" content="Sachtruyen247" />
 
-        <link rel="icon" href="{{$link_icon}}" type="image/gif" sizes="16x16">
+        
 
         <title>{{$meta_title}}</title>
         <!-- Styles --> --}}
+        <link rel="icon" href="{{ asset('img/illustrations/illustration-reset.jpg') }}" type="image/gif" sizes="16x16">
+        <meta property="og:url"                content="http://www.nytimes.com/2015/02/19/arts/international/when-great-minds-dont-think-alike.html" />
+        <meta property="og:type" content="WEBSITE" />
+        <meta property="og:title" content="ATV SHOP" />
+        <meta property="og:description" content="Chuyên bán đồ điện tử chính hãng" />
+        <meta property="og:image" content="http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg" />
     <!--//-------Seo--------->
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -44,6 +50,8 @@
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('css/responsive.css') }}" rel="stylesheet">
 
+    <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
+    
     {{-- css cho gallery ảnh trong chi tiết sản phẩm --}}
     <link href="{{ asset('css/lightgallery.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/lightslider.css') }}" rel="stylesheet">
@@ -98,12 +106,12 @@
                         <div class="btn-group pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-                                    VIETNAM
+                                    Tiếng Anh
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">USA></li>
-                                    <li><a href="#">VIETNAM</a></li>
+                                    <li><a href="{{ url('lang/en') }}">Tiếng Anh</li>
+                                    <li><a href="{{ url('lang/vi') }}">Tiếng Việt</a></li>
                                 </ul>
                             </div>
                             
@@ -122,9 +130,46 @@
                     <div class="col-sm-8">
                         <div class="shop-menu pull-right">
                             <ul class="nav navbar-nav">
-                                <li><a href="{{ route('login_checkout') }}"><i class="fa fa-user"></i> Tài khoản</a></li>
+                                <li><a href="{{ route('taikhoan') }}"><i class="fa fa-user"></i> Tài khoản, lịch sử mua hàng</a></li>
                                 <li><a href="{{ route('yeuthich') }}"><i class="fa fa-heart"></i> Yêu thích</a></li>
-                                <li><a href="{{ route('gio_hang') }}"><i class="fa fa-shopping-cart"></i> Giỏ hàng</a></li>
+
+                             {{-- hiển thị giỏ hàng --}}
+                                <style type="text/css">
+                                    .shop-menu ul li.cart-hover{
+                                        margin-top: 9px;
+                                    }
+                                    li.cart-hover{
+                                        position: relative;
+                                    }
+                                    .shop-menu .hover-cart{
+                                        display: none;
+                                        position: absolute;
+                                        z-index: 9999;
+                                        background-color: #FAF6F5;
+                                        padding: 0;
+                                        margin: 0;
+                                    }
+                                    ul.hover-cart li{
+                                        padding: 10px;
+                                        border-bottom: 1px solid black;
+                                    }
+                                    
+                                    li.cart-hover:hover .hover-cart{
+                                        display: inherit;
+                                        width: 200px;
+                                    }
+
+                                </style>
+                       
+                                <li class="cart-hover"> <div id="cart_count"></div>
+                                    <div class="giohang_hover">
+                                        
+                                    </div>
+                                    
+                                </li>
+
+                                
+
                                 @php
                                     $customer_id = Session()->get('customer_id');
                                 @endphp
@@ -156,29 +201,29 @@
                         </div>
                         <div class="mainmenu pull-left">
                             <ul class="nav navbar-nav collapse navbar-collapse">
-                                <li><a href="{{ route('homepage') }}" class="active">Trang chủ</a></li>
-                                <li class="dropdown"><a href="#">Danh mục<i class="fa fa-angle-down"></i></a>
+                                <li><a href="{{ route('homepage') }}" class="{{Request::segment(1)=='' ? 'active' : ''}}"> @lang('lang.home')</a></li>
+                                <li class="dropdown"><a class="{{Request::segment(1)=='danh_muc' ? 'active' : ''}}" href="#">{{__('lang.category')}}<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu" style="background-color:black;">
                                         @foreach ($category as $key => $dulieu)
-                                            <li><a href="{{ route('danh_muc',$dulieu->category_slug) }}">{{$dulieu->category_name}}</a></li>
+                                            <li><a class="{{Request::segment(2)==$dulieu->category_slug ? 'active' : ''}}"  href="{{ route('danh_muc',$dulieu->category_slug) }}">{{$dulieu->category_name}}</a></li>
                                         @endforeach 
                                     </ul>
                                 </li> 
-                                <li class="dropdown"><a href="#">Thương hiệu<i class="fa fa-angle-down"></i></a>
+                                <li class="dropdown"><a class="{{Request::segment(1)=='thuong_hieu' ? 'active' : ''}}" href="#">@lang('lang.brand')<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu" style="background-color:black;">
                                          @foreach ($brand as $key => $dulieu)
-                                            <li><a href="{{ route('thuong_hieu',$dulieu->brand_slug) }}">{{$dulieu->brand_name}}</a></li>
+                                            <li><a class="{{Request::segment(2)==$dulieu->brand_slug ? 'active' : ''}}" href="{{ route('thuong_hieu',$dulieu->brand_slug) }}">{{$dulieu->brand_name}}</a></li>
                                         @endforeach 
                                     </ul>
                                 </li> 
-                                <li class="dropdown"><a href="#">Tin tức<i class="fa fa-angle-down"></i></a>
+                                <li class="dropdown"><a class="{{Request::segment(1)=='tin_tuc' ? 'active' : ''}}" href="#">@lang('lang.blog')<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu" style="background-color:black;">
                                          @foreach ($cate_blog as $key => $dulieu)
-                                            <li><a href="{{ route('tin_tuc',$dulieu->cate_blog_slug) }}">{{$dulieu->cate_blog_name}}</a></li>
+                                            <li><a  href="{{ route('tin_tuc',$dulieu->cate_blog_slug) }}">{{$dulieu->cate_blog_name}}</a></li>
                                         @endforeach 
                                     </ul>
                                 </li>
-                                <li><a href="{{ route('lien_he') }}">Liên hệ</a></li>
+                                <li><a class="{{Request::segment(1)=='lien_he' ? 'active' : ''}}" href="{{ route('lien_he') }}">@lang('lang.contact')</a></li>
                             </ul>
                         </div>
                     </div>
@@ -252,36 +297,11 @@
                 <div class="col-sm-3">
                     <div class="left-sidebar">
                         <h2>Danh mục <i class="fas fa-bars"></i></h2>
-                        <div class="panel-group category-products" id="accordian"><!--category-productsr-->
-
-                            {{-- <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordian" href="#phukien">
-                                            <span class="badge pull-right"><i class="fa fa-plus"></i></span>
-                                            Phụ kiện
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="phukien" class="panel-collapse collapse">
-                                    <div class="panel-body">
-                                        <ul>
-                                             @foreach ($category as $key => $dulieu)
-                                            <li><div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title"><a href="{{ route('danh_muc',$dulieu->category_slug) }}">{{$dulieu->category_name}}</a></h4>
-                                </div>
-                            </div></li>
-                                            @endforeach 
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div> --}}
-                            
+                        <div class="panel-group category-products" id="accordian">
                          @foreach ($category as $key => $dulieu)
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h4 class="panel-title"><a href="{{ route('danh_muc',$dulieu->category_slug) }}">{{$dulieu->category_name}}</a></h4>
+                                    <h4 class="panel-title"><a class="{{Request::segment(2)==$dulieu->category_slug ? 'btn btn-sm btn-outline-dark' : ''}}" href="{{ route('danh_muc',$dulieu->category_slug) }}">{{$dulieu->category_name}}</a></h4>
                                 </div>
                             </div>
                          @endforeach   
@@ -292,7 +312,7 @@
                             <div class="brands-name">
                                 <ul class="nav nav-pills nav-stacked">
                                  @foreach ($brand as $key => $dulieu)   
-                                    <li><a href="{{ route('thuong_hieu',$dulieu->brand_slug) }}"> <span class="pull-right">
+                                    <li><a  class="{{Request::segment(2)==$dulieu->brand_slug ? 'btn btn-outline-info' : ''}}" href="{{ route('thuong_hieu',$dulieu->brand_slug) }}"> <span class="pull-right">
                                         @php
                                             $dem=0;
                                         @endphp
@@ -310,7 +330,12 @@
                             </div>
                         </div><!--/brands_products-->
                         
-                        
+                        <div class="brands_products">
+                            <h4>Sản phẩm đã xem</h4>
+                            <div class="brands-name">
+                                <div class="row" id="row_viewed"></div>
+                            </div>
+                        </div>
                         
                         <div class="shipping text-center"><!--shipping-->
                             <img src="{{ asset('images/home/shipping.jpg') }}" alt="" />
@@ -391,64 +416,52 @@
         <div class="footer-widget">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-2">
-                        <div class="single-widget">
-                            <h2>Dịch vụ</h2>
-                            <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">Online Help</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Order Status</a></li>
-                                <li><a href="#">Change Location</a></li>
-                                <li><a href="#">FAQ’s</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="single-widget">
-                            <h2>Danh mục</h2>
-                            <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">T-Shirt</a></li>
-                                <li><a href="#">Mens</a></li>
-                                <li><a href="#">Womens</a></li>
-                                <li><a href="#">Gift Cards</a></li>
-                                <li><a href="#">Shoes</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="single-widget">
-                            <h2>Chính sách</h2>
-                            <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">Terms of Use</a></li>
-                                <li><a href="#">Privecy Policy</a></li>
-                                <li><a href="#">Refund Policy</a></li>
-                                <li><a href="#">Billing System</a></li>
-                                <li><a href="#">Ticket System</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <div class="single-widget">
                             <h2>Thông tin</h2>
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">Company Information</a></li>
-                                <li><a href="#">Careers</a></li>
-                                <li><a href="#">Store Location</a></li>
-                                <li><a href="#">Affillate Program</a></li>
-                                <li><a href="#">Copyright</a></li>
+                                <li>Thời gian mở cửa từ 8am-20pm</li>
+                                <li>Từ thứ 2 đến thứ 6 (cả ngày lễ)</li>
+                                <li>Hotline: 0374667xxx</li>
+                                <li>Email: theanhvuxx@gmail.com</li>
+                                
+                                
                             </ul>
                         </div>
                     </div>
-                    <div class="col-sm-3 col-sm-offset-1">
+                    <div class="col-sm-3">
                         <div class="single-widget">
-                            <h2>Email</h2>
-                            <form action="#" class="searchform">
-                                <input type="text" placeholder="Your email address" />
-                                <button type="submit" class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i></button>
-                                <p>Get the most recent updates from <br />our site and be updated your self...</p>
-                            </form>
+                            <h2>Chính sách</h2>
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="http://shopanhthe.com/shop/public/view_blog/chinh-sach-giao-hang">Chính sách giao hàng</a></li>
+                                <li><a href="http://shopanhthe.com/shop/public/view_blog/chinh-sach-bao-hanh">Chính sách bảo hành</a></li>
+                                <li><a href="http://shopanhthe.com/shop/public/view_blog/noi-quy-cua-hang">Nội quy cửa hàng</a></li>
+                                <li><a href="http://shopanhthe.com/shop/public/view_blog/huong-dan-mua-hang">Hướng dẫn mua hàng</a></li>
+                                <li><a href="http://shopanhthe.com/shop/public/view_blog/canh-bao-gia-mao">Cảnh báo giả mạo</a></li>
+                            </ul>
                         </div>
                     </div>
+                    <div class="col-sm-3">
+                        <div class="single-widget">
+                            <h2>Danh mục</h2>
+                            @foreach ($category as $key => $dulieu)
+                            <ul >
+                                
+                                    <li ><a href="{{ route('danh_muc',$dulieu->category_slug) }}" style="color:black">{{$dulieu->category_name}}</a></li>
+
+                               </ul>
+                         @endforeach
+                                
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="single-widget">
+                            <h2>Bản đồ</h2>
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14898.065398380037!2d105.77333698421877!3d21.01201587721354!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135acaacbd219c7%3A0xe19b302ae07c6203!2zTmfDtSAxNCBN4buFIFRyw6wgSOG6oSwgTeG7hSBUcsOsLCBOYW0gVOG7qyBMacOqbSwgSMOgIE7hu5lpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1641700201629!5m2!1svi!2s" width="180" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                    
+                    
                     
                 </div>
             </div>
@@ -477,10 +490,11 @@
     
 
     <script type="text/javascript">
-   $('.tabs_danhmuc').click(function(){
-    $('.demo').removeClass('active');
-    const danhmuc_id = $(this).data('danhmuc_id');
-    var _token = $('input[name="_token"]').val();
+    $(document).ready(function(){
+        tab();
+        function tab() {
+            const danhmuc_id = 1;
+            var _token = $('input[name="_token"]').val();
             $.ajax({
                 url:'{{url('/tabs_danhmuc')}}',
                 method:"POST",
@@ -491,6 +505,24 @@
 
                 }
 
+            }); 
+        }
+   $('.tabs_danhmuc').click(function(){
+    $('.demo').removeClass('active');
+    const danhmuc_id = $(this).data('danhmuc_id');
+    var _token = $('input[name="_token"]').val();
+            $.ajax({
+                url:'{{url('/tabs_danhmuc')}}',
+                method:"POST",
+
+                data:{_token:_token, danhmuc_id:danhmuc_id},
+                success:function(data){
+                    $('#tab_danhmuctruyen').empty();
+                    $('#tab_danhmuctruyen').html(data);
+
+                }
+
+            }); 
             }); 
    })
  </script>
@@ -534,7 +566,107 @@
 
 <script src="{{ asset('js/sweetalert.js') }}"></script>
  <script type="text/javascript">
+        giohang_hover();
+            function giohang_hover() {
+                $.ajax({
+                    url:"{{ url('/giohang_hover') }}",
+                    method:'GET',
+                    success:function(data){
+                        $('.giohang_hover').html(data);
+                    }
+                });
+            }
+            count_cart();
+            function count_cart() {
+                $.ajax({
+                    url:"{{ url('/count_cart') }}",
+                    method:'GET',
+                    success:function(data){
+                        $('#cart_count').html(data);
+                    }
+                });
+            }
+            function show_quick_cart() {
+                $.ajax({
+                    url:"{{ url('/show_quick_cart') }}",
+                    method:'GET',
+                    success:function(data){
+                        $('#cart_show').html(data);
+                        $('#quick-cart').modal();
+                    }
+                    });
+            }
+            function delete_cart_product(id) {
+                var id = id;
+                $.ajax({
+                    url:"{{ url('/delete_quick_cart') }}",
+                    method:'POST',
+                    headers:{
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    data:{id:id},
+                    success:function(){
+                        
+                        count_cart();
+                        giohang_hover();
+                        show_quick_cart();
+                    }
+                    });
+            }
+            function addtocart(product_id){
+                var id = product_id;
+                 //alert(id);
+                var cart_product_id = $('.cart_product_id_' + id).val();
+                var cart_product_name = $('.cart_product_name_' + id).val();
+                var cart_product_image = $('.cart_product_image_' + id).val();
+                var cart_product_quantity = $('.cart_product_quantity_' + id).val();
+                var cart_product_price = $('.cart_product_price_' + id).val();
+                var cart_product_qty = $('.cart_product_qty_' + id).val();
+                var _token = $('input[name="_token"]').val();
+                // alert(cart_product_id)
+                // alert(cart_product_name)
+                // alert(cart_product_image)
+                // alert(cart_product_quantity)
+                // alert(cart_product_price)
+                // alert(cart_product_qty)
+                // alert(_token)
+                if(parseInt(cart_product_qty)>parseInt(cart_product_quantity)){
+                    alert('Làm ơn đặt nhỏ hơn ' + cart_product_quantity);
+                }else{
+
+                    $.ajax({
+
+                        url: '{{url('/add_cart_ajax')}}',
+                        method: 'POST',
+                        data:{cart_product_id:cart_product_id,cart_product_name:cart_product_name,cart_product_image:cart_product_image,cart_product_price:cart_product_price,cart_product_qty:cart_product_qty,_token:_token,cart_product_quantity:cart_product_quantity},
+                        success:function(){
+                            
+                            // swal({
+                            //         title: "Thêm vào giỏ hàng thành công !",
+                            //         //text: "Bạn muốn mua hàng tiếp hoặc tới giỏ hàng để tiến hành thanh toán",
+                            //         showCancelButton: true,
+                            //         cancelButtonText: "Xem tiếp",
+                            //         confirmButtonClass: "btn-success",
+                            //         confirmButtonText: "Đi đến giỏ hàng",
+                            //         closeOnConfirm: false
+                            //     },
+                                // function() {
+                                //     window.location.href = "{{url('/gio_hang')}}";
+                                // });
+                            
+                        count_cart();
+                        giohang_hover();
+                        show_quick_cart();
+                        
+                        }
+
+                    });
+                }
+
+                
+            }
         $(document).ready(function(){
+
             $('.add-to-cart').click(function(){
                 var id = $(this).data('id_product');
                  //alert(id);
@@ -575,8 +707,8 @@
                                 function() {
                                     window.location.href = "{{url('/gio_hang')}}";
                                 });
-                        
-
+                        count_cart();
+                        giohang_hover();
                         }
 
                     });
@@ -584,6 +716,9 @@
 
                 
             });
+
+            
+
         });
     </script>
 
@@ -704,11 +839,11 @@
                                swal("Đơn hàng", "Đơn hàng của bạn đã được gửi thành công", "success");
                             }
                         });
-
-                        window.setTimeout(function(){ 
+                window.setTimeout(function(){ 
                             location.reload();
                         } ,3000);
 
+                        
                       } else {
                         swal("Đóng", "Đơn hàng chưa được gửi", "error");
 
@@ -966,6 +1101,15 @@
        show_wishlist();
       });
     </script>
+
+    <script type="text/javascript">
+       $('.xoa_yeuthich').click(function(){
+        localStorage.removeItem("wishlist_sp"); 
+        window.setTimeout(function(){ 
+                            location.reload();
+                        } ,500);  
+      });
+    </script>
      {{-- ----- end Lưu sản phẩm yêu thích ---- --}}
 
      <script type="text/javascript">
@@ -1002,5 +1146,348 @@
           " - " + $( "#slider-range" ).slider( "values", 1 ) );
   });
   </script>
+
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"></script>
+  <script>
+
+
+    $(document).ready(function() {
+     
+    // Cấu hình các nhãn phân trang
+    $('#xxx,#xxx1').dataTable( {
+        "language": {
+        "sProcessing":   "Đang xử lý...",
+        "sLengthMenu":   "Xem _MENU_ mục",
+        "sZeroRecords":  "Không tìm thấy dòng nào phù hợp",
+        "sInfo":         "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+        "sInfoEmpty":    "Đang xem 0 đến 0 trong tổng số 0 mục",
+        "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+        "sInfoPostFix":  "",
+        "sSearch":       "Tìm:",
+        "sUrl":          "",
+        "oPaginate": {
+            "sFirst":    "Đầu",
+            "sPrevious": "Trước",
+            "sNext":     "Tiếp",
+            "sLast":     "Cuối"
+            }
+        }
+    } );
+         
+    } ); 
+  </script>   
+  <script>
+$(document).ready( function () {
+    $('#xxx, #xxx1').DataTable();
+} );
+</script>
+
+{{-- thanh toán bằng paypal --}}
+{{-- <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script>
+    var usd = document.getElementById('vnd_to_usd').value;
+  paypal.Button.render({
+    // Configure environment
+    env: 'sandbox',
+    client: {
+      sandbox: 'AeoiEVT5aCicJ0xDRhV6yzN_caFDFLHKpmY824_hGyE9l1RGpXscIHwH3Wp4EPLsUM0cS2RSCMnQfWg7',
+      production: 'demo_production_client_id'
+    },
+    // Customize button (optional)
+    locale: 'en_US',
+    style: {
+      size: 'small',
+      color: 'gold',
+      shape: 'pill',
+    },
+
+    // Enable Pay Now checkout flow (optional)
+    commit: true,
+
+    // Set up a payment
+    payment: function(data, actions) {
+      return actions.payment.create({
+        transactions: [{
+          amount: {
+            total: `${usd}`,
+            currency: 'USD'
+          }
+        }]
+      });
+    },
+    // Execute the payment
+    onAuthorize: function(data, actions) {
+      return actions.payment.execute().then(function() {
+        // Show a confirmation message to the buyer
+        window.alert('Thank you for your purchase!');
+      });
+    }
+  }, '#paypal-button');
+
+</script> --}}
+<script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_SANDBOX_CLIENT_ID') }}"></script>
+
+
+{{--  Thêm giỏ hàng phần tab_danhmuc --}}
+<script type="text/javascript">
+    function Addtocart($product_id) {
+        var id = $product_id;
+                 //alert(id);
+                var cart_product_id = $('.cart_product_id_' + id).val();
+                var cart_product_name = $('.cart_product_name_' + id).val();
+                var cart_product_image = $('.cart_product_image_' + id).val();
+                var cart_product_quantity = $('.cart_product_quantity_' + id).val();
+                var cart_product_price = $('.cart_product_price_' + id).val();
+                var cart_product_qty = $('.cart_product_qty_' + id).val();
+                var _token = $('input[name="_token"]').val();
+                // alert(cart_product_id)
+                // alert(cart_product_name)
+                // alert(cart_product_image)
+                // alert(cart_product_quantity)
+                // alert(cart_product_price)
+                // alert(cart_product_qty)
+                // alert(_token)
+                if(parseInt(cart_product_qty)>parseInt(cart_product_quantity)){
+                    alert('Làm ơn đặt nhỏ hơn ' + cart_product_quantity);
+                }else{
+
+                    $.ajax({
+
+                        url: '{{url('/add_cart_ajax')}}',
+                        method: 'POST',
+                        data:{cart_product_id:cart_product_id,cart_product_name:cart_product_name,cart_product_image:cart_product_image,cart_product_price:cart_product_price,cart_product_qty:cart_product_qty,_token:_token,cart_product_quantity:cart_product_quantity},
+                        success:function(){
+                            
+                            swal({
+                                    title: "Thêm vào giỏ hàng thành công !",
+                                    //text: "Bạn muốn mua hàng tiếp hoặc tới giỏ hàng để tiến hành thanh toán",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Xem tiếp",
+                                    confirmButtonClass: "btn-success",
+                                    confirmButtonText: "Đi đến giỏ hàng",
+                                    closeOnConfirm: false
+                                },
+                                function() {
+                                    window.location.href = "{{url('/gio_hang')}}";
+                                });
+                        
+
+                        }
+
+                    });
+                }
+    }
+</script>
+
+{{-- ----- Lưu sản phẩm đã xem ---- --}}
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+
+     
+      product_viewed();
+      
+      
+      function product_viewed(){
+
+        const id = $('.wishlist_id').val(); 
+         if(id!= undefined){
+        const title = $('.wishlist_title').val();
+        const img = $('.card-img-top').val();
+        const url = $('.wishlist_url').val();
+        const price = $('.wishlist_price').val();
+    
+        const item = {
+          'id': id,
+          'title': title,
+          'img': img,
+          'url': url,
+          'price':price
+          
+        }
+        if(localStorage.getItem('viewed')==null){
+           localStorage.setItem('viewed', '[]');
+        }
+        var old_data = JSON.parse(localStorage.getItem('viewed'));
+        
+        // tìm kiếm phần tử có id trong wishlist
+        var matches = $.grep(old_data, function(obj){
+            return obj.id == id;
+        })
+        // nếu có phần tử trùng
+        if(matches.length){
+            
+        }else{
+            if(old_data.length<=5){
+              old_data.push(item);
+            }else{
+                old_data.splice(1,1);
+                localStorage.setItem('viewed', JSON.stringify(old_data));
+                old_data.push(item);
+                  
+            }
+            localStorage.setItem('viewed', JSON.stringify(old_data));
+            
+        }
+         localStorage.setItem('viewed', JSON.stringify(old_data));
+ 
+      }
+      }
+       viewed();
+      function viewed(){
+        
+          if(localStorage.getItem('viewed')!=null){
+            // chuyển chuỗi json thành đối tượng js JSON.parse
+             var data = JSON.parse(localStorage.getItem('viewed'));
+             // đảo ngược mảng: thêm cuối sẽ hiển thị đầu tiên
+             data.reverse();
+
+             for(i=0;i<data.length;i++){
+
+                var title = data[i].title.substring(0, 20);
+                var img = data[i].img;
+                var id = data[i].id;
+                var url = data[i].url;
+                var price = new Intl.NumberFormat('de-DE').format(data[i].price);
+                
+                $('#row_viewed').append(` 
+                  <div class="row" style="margin:10px 0">
+                        <a href="`+url+`">
+                            <div class="col-md-4">
+                                <img src="`+img+`" alt="" width="100%" />
+                            </div>
+                            <div class="col-md-8 info-viewed">
+                                    <p>`+title+`</p>
+                                    <p style="color:orange">`+price+` vnđ</p>
+                            </div>                                    
+                        </a>                  
+                   </div>
+                 `);
+            }
+
+          }
+      }
+      });
+    </script>
+
+    {{-- ----- Lưu sản phẩm đã xem ---- --}}
+    <script type="text/javascript">
+
+
+
+        function delete_compare(id) {
+              if(localStorage.getItem('compare')!=null){
+            // chuyển chuỗi json thành đối tượng js JSON.parse
+             var data = JSON.parse(localStorage.getItem('compare'));
+             var index = data.findIndex(item => item.id == id);
+             data.splice(index,1);
+             localStorage.setItem('compare', JSON.stringify(data));
+             document.getElementById("row_compare"+id).remove();
+         }
+        }
+      
+      sosanh();
+      function sosanh(){
+        
+          if(localStorage.getItem('compare')!=null){
+            // chuyển chuỗi json thành đối tượng js JSON.parse
+             var data = JSON.parse(localStorage.getItem('compare'));
+             // đảo ngược mảng: thêm cuối sẽ hiển thị đầu tiên
+
+             for(i=0;i<data.length;i++){
+
+                var title = data[i].title;
+                var img = data[i].img;
+                var id = data[i].id;
+                var url = data[i].url;
+                var desc = data[i].desc;
+                var price = data[i].price;
+
+                $('#row_compare').find('tbody').append(` 
+                  <tr id="row_compare`+id+`">
+                    <td>`+title+`</td>
+                    <td>`+price+`</td>
+                    <td><img src="`+img+`" alt="" style="width:150px; height:150px"></td>
+                    <td>`+desc+`</td>
+              
+                    <td><a href="`+url+`">Xem sản phẩm</a></td>
+                    <td
+                    <a href="" style="cursor:pointer;" onclick="delete_compare(`+id+`)">Xóa so sánh</a></td>
+                </tr>
+                 `);        
+                
+            }
+
+          }
+      }
+
+      function add_compare(product_id){
+
+        var id = product_id; 
+        // alert(id);
+        var title = document.getElementById('wishlist_productname'+id).value;
+        // alert(title);
+        var img = document.getElementById('wishlist_productimage'+id).src;
+        // alert(img);
+        var url = document.getElementById('wishlist_producturl'+id).href;
+        // alert(url);
+        var price = document.getElementById('wishlist_productprice'+id).value;
+        // alert(price);
+        var desc = document.getElementById('wishlist_productdesc'+id).value;
+        
+        
+        
+        
+        
+        // alert(desc);
+        var item = {
+          'id': id,
+          'title': title,
+          'img': img,
+          'url': url,
+          'price':price,
+          'desc':desc
+          
+        }
+        if(localStorage.getItem('compare')==null){
+           localStorage.setItem('compare', '[]');
+        }
+        var old_data = JSON.parse(localStorage.getItem('compare'));
+        
+        // tìm kiếm phần tử có id trong wishlist
+        var matches = $.grep(old_data, function(obj){
+            return obj.id == id;
+        })
+        // nếu có phần tử trùng
+        if(matches.length){
+            
+        }else{
+            if(old_data.length<=30){  
+            old_data.push(item);
+            $('#row_compare').find('tbody').append(` 
+                  <tr id="row_compare`+id+`">
+                    <td>`+item.title+`</td>
+                    <td>`+item.price+`</td>
+                    <td><img src="`+img+`" alt="" style="width:150px; height:150px"></td>
+                    <td>`+item.desc+`</td>
+              
+                    <td><a href="`+item.url+`">Xem sản phẩm</a></td>
+                    <td
+                    <a href="" style="cursor:pointer;" onclick="delete_compare(`+id+`)">Xóa so sánh</a></td>
+
+                </tr>
+                 `);          
+        }
+      }
+      localStorage.setItem('compare', JSON.stringify(old_data));
+      $('#sosanh').modal();
+      }
+
+    </script>
+
+    <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+{!! Toastr::message() !!}
 </body>
 </html>

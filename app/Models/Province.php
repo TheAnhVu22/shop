@@ -14,4 +14,12 @@ class Province extends Model
     ];
     public $table='tbl_quanhuyen';
     public $primaryKey = 'maqh';
+    public function wards()
+    {
+        return $this->hasMany('App\Models\Wards', 'maqh');
+    }
+    public function city()
+    {
+        return $this->belongsTo('App\Models\City', 'matp');
+    }
 }

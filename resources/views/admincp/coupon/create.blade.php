@@ -92,6 +92,18 @@
                                 <input type="text" class="form-control" name="coupon_number" value="{{ old('coupon_number') }}" >
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <label for="coupon_date_start" class="col-md-4 col-form-label text-md-right">Ngày bắt đầu:</label>
+                            <div class="col-md-6 border">
+                                <input autocomplete="off" type="text" id='datepicker' class="form-control" name="coupon_date_start" value="{{ old('coupon_date_start') }}" >
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="coupon_date_end" class="col-md-4 col-form-label text-md-right">Ngày kết thúc:</label>
+                            <div class="col-md-6 border">
+                                <input autocomplete="off" type="text" id='datepicker2' class="form-control" name="coupon_date_end" value="{{ old('coupon_date_end') }}" >
+                            </div>
+                        </div>
                         <div class="row mb-0">
                             <div class="col-md-8 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

@@ -14,4 +14,8 @@ class City extends Model
     ];
     public $table='tbl_tinhthanhpho';
     public $primaryKey = 'matp';
+    public function province()
+    {
+        return $this->hasMany('App\Models\Province', 'matp');
+    }
 }
